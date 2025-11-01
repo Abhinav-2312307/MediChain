@@ -10,7 +10,11 @@ It allows patients to manage their health data, doctors to update medical record
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white)
 
 
-🚀 Live Demo: [https://mediora.onrender.com](https://mediora.onrender.com)
+🚀 Live Demo links: 
+
+[https://mediora.onrender.com](https://mediora.onrender.com)
+[https://medichain.up.railway.app/](https://medichain.up.railway.app/)
+[https://medichain1.onrender.com/](https://medichain1.onrender.com/)
 
 ---
 
