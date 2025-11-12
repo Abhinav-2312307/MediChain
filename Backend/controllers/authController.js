@@ -44,16 +44,18 @@ async function signup(req, res) {
 
     // Validate role
     if (!role || !["patient", "doctor", "hospital"].includes(role)) {
-      return res.status(400).render("signup", {
-        message: "Invalid role. Must be patient, doctor, or hospital",
-      });
+      return res
+        .status(400)
+        .json({
+          message: "Invalid role. Must be patient, doctor, or hospital",
+        });
     }
 
     // Validate required fields
     if (!name || !email || !password) {
-      return res.status(400).render("signup", {
-        message: "Name, email, and password are required",
-      });
+      return res
+        .status(400)
+        .json({ message: "Name, email, and password are required" });
     }
 
     // Select the correct model based on role
@@ -63,9 +65,7 @@ async function signup(req, res) {
     // Check if user already exists
     const existingUser = await Model.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .render("signup", { message: "User with this email already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Generate unique UID
@@ -75,19 +75,23 @@ async function signup(req, res) {
 
     if (role === "patient" || role === "doctor") {
       if (!dob || !gender) {
-        return res.status(400).render("signup", {
-          message: "DOB and gender are required for patients and doctors",
-        });
+        return res
+          .status(400)
+          .json({
+            message: "DOB and gender are required for patients and doctors",
+          });
       }
       userData = { ...userData, dob, gender };
 
       if (role === "doctor") {
         const { specialization, licenseNumber } = req.body;
         if (!specialization || !licenseNumber) {
-          return res.status(400).render("signup", {
-            message:
-              "Specialization and License Number are required for doctors",
-          });
+          return res
+            .status(400)
+            .json({
+              message:
+                "Specialization and License Number are required for doctors",
+            });
         }
         userData = { ...userData, specialization, licenseNumber };
       }
@@ -113,10 +117,16 @@ async function signup(req, res) {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(201).redirect(`/dashboard/${role}`);
+    res.status(201).json({
+      message: "User created successfully",
+      uid: user.uid,
+      role,
+      token,
+      redirectTo: `/dashboard/${role}`,
+    });
   } catch (error) {
     console.error("Signup error:", error);
-    res.status(500).render("error", {
+    res.status(500).json({
       message: "Error signing up",
       error: error.message,
     });

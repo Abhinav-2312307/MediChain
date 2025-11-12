@@ -14,7 +14,7 @@ export default function CTASection() {
         health ecosystem.
       </p>
       <button
-        onClick={() => navigate("/auth/signup")}
+        onClick={() => navigate("/signup")}
         className="px-8 py-3 bg-white text-blue-700 font-semibold rounded-lg shadow-md hover:bg-gray-100 transition cursor-pointer"
       >
         Get Started <LogIn className="inline-block ml-2 w-5 h-5" />

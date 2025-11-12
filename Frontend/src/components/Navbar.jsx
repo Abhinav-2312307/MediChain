@@ -56,13 +56,13 @@ export default function Navbar({ locoScrollRef }) {
             Security
           </a>
           <Link
-            to="/auth/login"
+            to="/login"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
             login
           </Link>
           <Link
-            to="/auth/signup"
+            to="/signup"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
             SignUp
@@ -99,13 +99,13 @@ export default function Navbar({ locoScrollRef }) {
             Security
           </a>
           <Link
-            to="/auth/login"
+            to="/login"
             className="block w-full text-left px-6 py-3 mt-2 bg-blue-50 text-blue-600 font-semibold"
           >
             Login
           </Link>
           <Link
-            to="/auth/signup"
+            to="/signup"
             className="block w-full text-left px-6 py-3 mt-2 bg-blue-50 text-blue-600 font-semibold"
           >
             SignUp
