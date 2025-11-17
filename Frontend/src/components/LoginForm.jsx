@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useNavigate } from "react-router-dom"; 
 
 export default function LoginForm() {
   const API_URL = import.meta.env.VITE_Backend_API_URL;
   const { isDark } = useTheme();
-
+  const navigate = useNavigate();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -19,10 +20,13 @@ export default function LoginForm() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/auth/login`, data);
-      alert("Login successful!");
+      const response = await axios.post(`${API_URL}/auth/login`, data);
+      console.log(response)
+      
+      navigate(response.data.redirectTo); 
+
     } catch (err) {
-      alert(err?.response?.data?.message || "Login failed");
+      alert(err?.response?.data?.message || "Login failed"); // later to implement error or popup
     }
   };
 

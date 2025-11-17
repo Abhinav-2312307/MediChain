@@ -8,6 +8,12 @@ const Hospital = require("../models/Hospital");
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1d";
 
+const rolePaths = {
+  patient: "/patient-portal",
+  doctor: "/doctor-dashboard", // For later
+  hospital: "/hospital-admin", // For later
+};
+
 // to generate UID
 const generateUID = async (role, Model) => {
   const prefix = role === "patient" ? "PAT" : role === "doctor" ? "DOC" : "HOS";
@@ -95,7 +101,7 @@ async function signup(req, res) {
     const user = new Model(userData);
 
     await user.save();
-    console.log("User saved successfully:", user.uid); // Debug log
+    console.log("User saved successfully:", user.uid);
 
     // Generate JWT token
     const token = jwt.sign(
@@ -108,15 +114,15 @@ async function signup(req, res) {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    const redirectTo = rolePaths[role] || "/";
 
     res.status(201).json({
       message: "User created successfully",
-      uid: user.uid,
-      role,
-      token,
-      redirectTo: `/dashboard/${role}`,
+      redirectTo,
+      user: user,
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -128,7 +134,6 @@ async function signup(req, res) {
 }
 
 // login
-
 async function login(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -168,10 +173,18 @@ async function login(req, res) {
       httpOnly: true, // secure from JS access
       secure: process.env.NODE_ENV === "production", // only HTTPS in prod
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.redirect(`/dashboard/${role}`);
+    // Get the correct path for the user's role
+    const redirectTo = rolePaths[role] || "/";
+
+    // Send JSON response that your React app can understand
+    res.status(200).json({
+      message: "Login successful",
+      redirectTo: redirectTo, // tells the frontend where to go
+      user: user,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({

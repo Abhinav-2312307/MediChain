@@ -48,10 +48,9 @@ export default function SignupForm() {
 
     try {
       await axios.post(`${API_URL}/auth/signup`, payload);
-      alert("Account created!");
-      // navigate(`/dashboard/${role}`);
+      navigate(`/dashboard/${role}`);
     } catch (err) {
-      alert(err?.response?.data?.message || "Signup failed");
+      alert(err?.response?.data?.message || "Signup failed"); // later to implement error or popup
     } finally {
       setLoading(false);
     }
