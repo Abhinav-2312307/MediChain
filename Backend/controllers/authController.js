@@ -51,7 +51,8 @@ async function signup(req, res) {
     // Validate role
     if (!role || !["patient", "doctor", "hospital"].includes(role)) {
       return res.status(400).json({
-        message: "Invalid role. Must be patient, doctor, or hospital",
+        // message: "Invalid role. Must be patient, doctor, or hospital",
+        message: "Bro, choose a real role. This is not Avengers: Endgame.",
       });
     }
 
@@ -59,7 +60,8 @@ async function signup(req, res) {
     if (!name || !email || !password) {
       return res
         .status(400)
-        .json({ message: "Name, email, and password are required" });
+        // .json({ message: "Name, email, and password are required" });
+        .json({ message: "Missing details! Even Maggi needs at least 2 ingredients." });
     }
 
     // Select the correct model based on role
@@ -69,7 +71,7 @@ async function signup(req, res) {
     // Check if user already exists
     const existingUser = await Model.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "This user already exists… just like that one annoying relative." });
     }
 
     // Generate unique UID
@@ -80,7 +82,7 @@ async function signup(req, res) {
     if (role === "patient" || role === "doctor") {
       if (!dob || !gender) {
         return res.status(400).json({
-          message: "DOB and gender are required for patients and doctors",
+          message: "DOB & Gender missing — you seem immortal and mysterious.",
         });
       }
       userData = { ...userData, dob, gender };
@@ -90,7 +92,7 @@ async function signup(req, res) {
         if (!specialization || !licenseNumber) {
           return res.status(400).json({
             message:
-              "Specialization and License Number are required for doctors",
+              "Provide your license — we don’t accept Google-certified doctors.",
           });
         }
         userData = { ...userData, specialization, licenseNumber };
@@ -120,14 +122,14 @@ async function signup(req, res) {
     const redirectTo = rolePaths[role] || "/";
 
     res.status(201).json({
-      message: "User created successfully",
+      message: "User created — welcome to the world of medical chaos.",
       redirectTo,
       user: user,
     });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({
-      message: "Error signing up",
+      message: "Signup error: blame the WiFi, always.",
       error: error.message,
     });
   }
@@ -138,7 +140,7 @@ async function login(req, res) {
   const { email, password } = req.body;
   if (!email || !password) {
     return res.status(401).json({
-      message: "invalid Credentials",
+      message: "Signup error: blame the WiFi, always.",
     });
   }
 
@@ -150,7 +152,7 @@ async function login(req, res) {
 
     if (!user) {
       return res.status(404).json({
-        message: "User Not Found",
+        message: "User missing. Maybe you were never born in our database.",
       });
     }
 
@@ -158,7 +160,7 @@ async function login(req, res) {
     if (!isMatch) {
       // if pass is wrong, doesnot match
       return res.status(401).json({
-        message: "invalid Credentials",
+        message: "Access denied — who are you? keyboard pranked you?",
       });
     }
 
@@ -181,15 +183,16 @@ async function login(req, res) {
 
     // Send JSON response that your React app can understand
     res.status(200).json({
-      message: "Login successful",
+      message: "Access granted — VIP detected.",
       redirectTo: redirectTo, // tells the frontend where to go
       user: user,
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({
-      message:
-        "Internal Server Error. Please Try Reloading the page or try again after some time",
+      // message:
+      //   "Internal Server Error. Please Try Reloading the page or try again after some time",
+      message:"Server is crying in a corner. Please retry later.",
     });
   }
 }
