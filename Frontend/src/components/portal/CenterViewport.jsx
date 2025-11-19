@@ -1,4 +1,3 @@
-// src/components/portal/CenterViewport.jsx
 import React, { useRef, useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, ContactShadows } from "@react-three/drei";
@@ -6,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import HumanModel from "./HumanModel";
 import { GlassStatCard } from "./PortalUI";
 import { deriveStats, computeStaticCardPlacement, GLASS_CLASSES } from "./utils";
-import { useTheme } from "../../context/ThemeContext"; // Make sure this path points to your ThemeContext
+import { useTheme } from "../../context/ThemeContext";
 
 const statOrder = ["brain", "lungs", "heart", "digest", "liver", "kidney", "msk", "mobility"];
 const cardPlacements = computeStaticCardPlacement();
@@ -22,7 +21,7 @@ export default function CenterViewport({ patient, activeTab }) {
   const containerRef = useRef(null);
   const [rect, setRect] = useState({ width: 1, height: 1 });
   const stats = deriveStats(patient);
-  const { isDark } = useTheme(); // Access theme state
+  const { isDark } = useTheme(); // for theme
 
   useEffect(() => {
     const measure = () => {
@@ -53,13 +52,12 @@ export default function CenterViewport({ patient, activeTab }) {
         zIndex: 1,
       }}
     >
-      {/* Dark mode overlay: darkens the background image in dark mode */}
+      {/* darkens the background image in dark mode */}
       <div className="absolute inset-0 bg-indigo-50/0 dark:bg-slate-900/50 pointer-events-none z-0 transition-colors duration-500" />
 
       {activeTab === "overview" && (
         <>
           <Canvas style={{ width: "100%", height: "100%", zIndex: 10 }} camera={{ position: [0, 1.6, 4.0], fov: 40 }}>
-            {/* Dim lights in dark mode, bright in light mode */}
             <ambientLight intensity={isDark ? 0.6 : 0.95} />
             <directionalLight intensity={isDark ? 0.8 : 1} position={[4, 5, 5]} />
             <Suspense fallback={null}>
