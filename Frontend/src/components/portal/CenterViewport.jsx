@@ -5,7 +5,8 @@ import { OrbitControls, ContactShadows } from "@react-three/drei";
 import { AnimatePresence } from "framer-motion";
 import HumanModel from "./HumanModel";
 import { GlassStatCard } from "./PortalUI";
-import { deriveStats, computeStaticCardPlacement, glassBase } from "./utils";
+import { deriveStats, computeStaticCardPlacement, GLASS_CLASSES } from "./utils";
+import { useTheme } from "../../context/ThemeContext"; // Make sure this path points to your ThemeContext
 
 const statOrder = ["brain", "lungs", "heart", "digest", "liver", "kidney", "msk", "mobility"];
 const cardPlacements = computeStaticCardPlacement();
@@ -21,6 +22,7 @@ export default function CenterViewport({ patient, activeTab }) {
   const containerRef = useRef(null);
   const [rect, setRect] = useState({ width: 1, height: 1 });
   const stats = deriveStats(patient);
+  const { isDark } = useTheme(); // Access theme state
 
   useEffect(() => {
     const measure = () => {
@@ -42,18 +44,24 @@ export default function CenterViewport({ patient, activeTab }) {
   return (
     <div
       ref={containerRef}
+      className="relative rounded-xl overflow-hidden h-full transition-colors duration-500"
       style={{
-        position: "relative", borderRadius: 14, overflow: "hidden",
-        backgroundImage: `url(/platform.png)`, backgroundSize: 'cover',
-        backgroundPosition: 'center', backgroundRepeat: 'no-repeat',
-        zIndex: 1, height: "100%",
+        backgroundImage: `url(/platform.png)`, 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center', 
+        backgroundRepeat: 'no-repeat',
+        zIndex: 1,
       }}
     >
+      {/* Dark mode overlay: darkens the background image in dark mode */}
+      <div className="absolute inset-0 bg-indigo-50/0 dark:bg-slate-900/50 pointer-events-none z-0 transition-colors duration-500" />
+
       {activeTab === "overview" && (
         <>
-          <Canvas style={{ width: "100%", height: "100%" }} camera={{ position: [0, 1.6, 4.0], fov: 40 }}>
-            <ambientLight intensity={0.95} />
-            <directionalLight intensity={1} position={[4, 5, 5]} />
+          <Canvas style={{ width: "100%", height: "100%", zIndex: 10 }} camera={{ position: [0, 1.6, 4.0], fov: 40 }}>
+            {/* Dim lights in dark mode, bright in light mode */}
+            <ambientLight intensity={isDark ? 0.6 : 0.95} />
+            <directionalLight intensity={isDark ? 0.8 : 1} position={[4, 5, 5]} />
             <Suspense fallback={null}>
               <HumanModel onModelClick={() => setOpenCloud((s) => !s)} />
               <OrbitControls enablePan={false} enableZoom={false} minPolarAngle={0.4} maxPolarAngle={Math.PI - 0.5} />
@@ -62,7 +70,7 @@ export default function CenterViewport({ patient, activeTab }) {
           </Canvas>
 
           {!openCloud && (
-            <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", padding: "8px 12px", background: "rgba(255,255,255,0.9)", borderRadius: 12, zIndex: 20 }}>
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 px-4 py-2 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-full z-20 text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-lg pointer-events-none">
               Click the model to show organ stats
             </div>
           )}
@@ -76,7 +84,11 @@ export default function CenterViewport({ patient, activeTab }) {
               const sy = rect.height * syPercent;
               const tx = rect.width * (parseFloat(placement.left) / 100);
               const ty = rect.height * (parseFloat(placement.top) / 100);
-              return <path key={id} d={`M ${sx} ${sy} L ${tx} ${ty}`} stroke="rgba(8,18,40,0.6)" strokeWidth="3" fill="none" strokeLinecap="round" />;
+              
+              // White lines in dark mode, Dark Blue in light mode
+              const strokeColor = isDark ? "rgba(255,255,255,0.4)" : "rgba(8,18,40,0.6)";
+              
+              return <path key={id} d={`M ${sx} ${sy} L ${tx} ${ty}`} stroke={strokeColor} strokeWidth="2" fill="none" strokeLinecap="round" />;
             })}
           </svg>
 
@@ -90,38 +102,40 @@ export default function CenterViewport({ patient, activeTab }) {
         </>
       )}
       
-      {activeTab === "timeline" && <TimelineView patient={patient} />}
-      {activeTab === "allergies" && <AllergyView patient={patient} />}
+      <div className="relative z-10 h-full">
+         {activeTab === "timeline" && <TimelineView patient={patient} />}
+         {activeTab === "allergies" && <AllergyView patient={patient} />}
+      </div>
     </div>
   );
 }
 
 const TimelineView = ({ patient }) => (
-  <div style={{ padding: 20, height: "100%", overflow: "auto" }}>
-    <div style={{ fontWeight: 900, fontSize: 20, marginBottom: 12 }}>Medical Timeline</div>
-    <div style={{ ...glassBase, padding: 14 }}>
-      <div style={{ fontWeight: 800 }}>Surgical Procedures</div>
-      <ul style={{ marginTop: 8 }}>{(patient?.medicalHistory?.surgicalProcedures || []).length ? patient.medicalHistory.surgicalProcedures.map((s, i) => <li key={i}>{s}</li>) : <li>None recorded</li>}</ul>
+  <div className="p-5 h-full overflow-auto">
+    <div className="font-black text-xl mb-4 text-slate-900 dark:text-white">Medical Timeline</div>
+    <div className={`${GLASS_CLASSES} p-4`}>
+      <div className="font-extrabold text-slate-900 dark:text-white">Surgical Procedures</div>
+      <ul className="mt-2 space-y-1 text-slate-700 dark:text-slate-300">{(patient?.medicalHistory?.surgicalProcedures || []).length ? patient.medicalHistory.surgicalProcedures.map((s, i) => <li key={i}>• {s}</li>) : <li>None recorded</li>}</ul>
     </div>
-    <div style={{ height: 12 }} />
-    <div style={{ ...glassBase, padding: 14 }}>
-      <div style={{ fontWeight: 800 }}>Past Hospitalizations</div>
-      <div style={{ marginTop: 8 }}>{(patient?.medicalHistory?.pastHospitalizations || []).length ? patient.medicalHistory.pastHospitalizations.map((h, i) => <div key={i} style={{ marginBottom: 8 }}><div style={{ fontWeight: 700 }}>{h.reason}</div><div style={{ fontSize: 12, color: "#475569" }}>{h.duration} • {h.hospitalName}</div></div>) : <div>No hospitalizations recorded</div>}</div>
+    <div className="h-4" />
+    <div className={`${GLASS_CLASSES} p-4`}>
+      <div className="font-extrabold text-slate-900 dark:text-white">Past Hospitalizations</div>
+      <div className="mt-3 space-y-3">{(patient?.medicalHistory?.pastHospitalizations || []).length ? patient.medicalHistory.pastHospitalizations.map((h, i) => <div key={i} className="border-b border-white/10 pb-2 last:border-0"><div className="font-bold text-slate-800 dark:text-slate-200">{h.reason}</div><div className="text-xs text-slate-500 dark:text-slate-400">{h.duration} • {h.hospitalName}</div></div>) : <div className="text-slate-500 dark:text-slate-400">No hospitalizations recorded</div>}</div>
     </div>
   </div>
 );
 
 const AllergyView = ({ patient }) => (
-  <div style={{ padding: 20, height: "100%", overflow: "auto" }}>
-     <div style={{ fontWeight: 900, fontSize: 20, marginBottom: 12 }}>Allergies & Immunization</div>
-     <div style={{ ...glassBase, padding: 14 }}>
-        <div style={{ fontWeight: 800 }}>Allergies</div>
-        <ul style={{ marginTop: 8 }}>{(patient?.medicalHistory?.allergies || []).length ? patient.medicalHistory.allergies.map((a, i) => <li key={i}>{a}</li>) : <li>No allergies recorded</li>}</ul>
+  <div className="p-5 h-full overflow-auto">
+     <div className="font-black text-xl mb-4 text-slate-900 dark:text-white">Allergies & Immunization</div>
+     <div className={`${GLASS_CLASSES} p-4`}>
+        <div className="font-extrabold text-slate-900 dark:text-white">Allergies</div>
+        <ul className="mt-2 space-y-1 text-slate-700 dark:text-slate-300">{(patient?.medicalHistory?.allergies || []).length ? patient.medicalHistory.allergies.map((a, i) => <li key={i}>• {a}</li>) : <li>No allergies recorded</li>}</ul>
      </div>
-     <div style={{ height: 12 }} />
-     <div style={{ ...glassBase, padding: 14 }}>
-       <div style={{ fontWeight: 800 }}>Vaccination Records</div>
-       <ul style={{ marginTop: 8 }}>{(patient?.medicalHistory?.vaccinationRecords || []).length ? patient.medicalHistory.vaccinationRecords.map((v, i) => <li key={i}>{v}</li>) : <li>No vaccination records</li>}</ul>
+     <div className="h-4" />
+     <div className={`${GLASS_CLASSES} p-4`}>
+       <div className="font-extrabold text-slate-900 dark:text-white">Vaccination Records</div>
+       <ul className="mt-2 space-y-1 text-slate-700 dark:text-slate-300">{(patient?.medicalHistory?.vaccinationRecords || []).length ? patient.medicalHistory.vaccinationRecords.map((v, i) => <li key={i}>• {v}</li>) : <li>No vaccination records</li>}</ul>
      </div>
   </div>
 );

@@ -1,16 +1,7 @@
-// src/components/portal/utils.js
 
 export const DEFAULT_AVATAR = "https://img.freepik.com/premium-photo/human-resources-manager-digital-avatar-generative-ai_934475-9192.jpg?ga=GA1.1.273726104.1763057097&semt=ais_hybrid&w=740&q=80";
 
-export const glassBase = {
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
-  background: "rgba(255,255,255,0.10)",
-  border: "1px solid rgba(255,255,255,0.22)",
-  borderRadius: 12,
-  boxShadow: "0 12px 40px rgba(8,18,40,0.06)",
-  color: "#061226",
-};
+export const GLASS_CLASSES = "backdrop-blur-xl bg-white/30 dark:bg-slate-900/60 border border-white/40 dark:border-slate-700/50 shadow-xl rounded-xl text-slate-900 dark:text-slate-100 transition-all duration-300";
 
 export function calcAge(dob) {
   if (!dob) return "";
