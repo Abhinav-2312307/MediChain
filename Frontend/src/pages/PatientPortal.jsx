@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Classic } from "@theme-toggles/react";
 import "@theme-toggles/react/css/Classic.css";
+import axios from "axios";
 import {
   LogOut,
   User,
@@ -22,6 +23,8 @@ import usePatientStore from "../Store/PatientStore";
 import { DEFAULT_AVATAR, GLASS_CLASSES } from "../components/portal/utils";
 import { LeftPanel, RightPanel } from "../components/portal/SidePanels";
 import CenterViewport from "../components/portal/CenterViewport";
+
+const API_URL = "http://localhost:5001";
 
 // --- Helper Component for Settings Input Fields ---
 const SettingField = ({
@@ -199,9 +202,12 @@ export default function PatientPortal() {
     setIsSettingsOpen(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsMenuOpen(false);
-    toast.success("Logged out successfully");
+    const res = await axios.get(`${API_URL}/auth/logout`);
+    // toast.success("Logged out successfully");
+    console.log(res?.data?.message);
+    toast.success(res?.data?.message || "Logged out successfully");
     navigate("/login");
   };
 
