@@ -2,7 +2,6 @@ import React from "react";
 import { GLASS_CLASSES, calcAge } from "./utils";
 import { Donut } from "./PortalUI";
 
-// Helper to ensure content fits without scrolling
 const COMPACT_GLASS = `${GLASS_CLASSES} p-3`;
 
 export function LeftPanel({ patient, bodyPercent }) {
