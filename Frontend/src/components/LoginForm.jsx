@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
-import { useNavigate } from "react-router-dom"; 
-import toast from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import usePatientStore from "../Store/PatientStore.jsx";
 
@@ -25,16 +25,20 @@ export default function LoginForm() {
   const submit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, data);
-      
-      console.log(response.data.user)
-      setPatientData(response.data.user); 
-      
-      navigate(response.data.redirectTo); 
-      toast.success("wooof u made it !!"); 
+      const response = await axios.post(`${API_URL}/auth/login`, data, {
+        withCredentials: true,
+      });
 
+      console.log(response.data.user);
+      setPatientData(response.data.user);
+
+      navigate(response.data.redirectTo);
+      toast.success("wooof u made it !!");
     } catch (err) {
-      toast.error(  err?.response?.data?.message || "Server is crying in a corner. Please retry later. !!! ");// login poop up 
+      toast.error(
+        err?.response?.data?.message ||
+          "Server is crying in a corner. Please retry later. !!! "
+      ); // login poop up
       // alert(err?.response?.data?.message || "Login failed"); // later to implement error or popup
     }
   };

@@ -8,8 +8,10 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
 async function authMiddleware(req, res, next) {
   try {
     const token = req.cookies?.token; // read token from cookie
-    if (!token) return res.redirect("/auth/login");
-
+    if (!token)
+      return res
+        .status(401)
+        .json({ message: "Unauthorized: No token provided" });
     const decoded = jwt.verify(token, JWT_SECRET);
     let user;
 
@@ -19,8 +21,8 @@ async function authMiddleware(req, res, next) {
     else if (decoded.role === "hospital")
       user = await Hospital.findById(decoded.id);
 
-    if (!user) return res.redirect("/auth/login");
-
+    if (!user)
+      return res.status(401).json({ message: "Unauthorized: User not found" });
     req.user = {
       id: user._id,
       uid: user.uid,
@@ -32,7 +34,7 @@ async function authMiddleware(req, res, next) {
     next();
   } catch (err) {
     console.error(err);
-    return res.redirect("/auth/login");
+    return res.status(401).json({ message: "Unauthorized: Invalid token" });
   }
 }
 
