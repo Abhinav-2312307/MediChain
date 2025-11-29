@@ -1,22 +1,43 @@
-import { create } from 'zustand';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-const usePatientStore = create((set) => ({
-  patientData: null,
-  // loading: false,
-  // error: null,
+const usePatientStore = create(
+  persist(
+    (set) => ({
+      patientData: null,
+      error: null,
 
-  // to set patient data 
-  setPatientData: (data) => set({ patientData: data }),
+      setPatientData: (data) =>
+        set({
+          patientData: data,
+          error: null,
+        }),
 
-  // to update specific fields 
-  updatePatientField: (field, value) => set((state) => ({
-    patientData: { ...state.patientData, [field]: value }
-  })),
+      updatePatientData: (data) =>
+        set({
+          patientData: data,
+        }),
 
-  // setLoading: (isLoading) => set({ loading: isLoading }),
-  // setError: (errorMsg) => set({ error: errorMsg, loading: false }),
+      updatePatientField: (field, value) =>
+        set((state) => ({
+          patientData: { ...state.patientData, [field]: value },
+        })),
 
-  clearPatientData: () => set({ patientData: null, error: null })
-}));
+      setError: (errorMsg) =>
+        set({
+          error: errorMsg,
+        }),
+
+      clearPatientData: () =>
+        set({
+          patientData: null,
+          error: null,
+        }),
+    }),
+    {
+      name: "patient_store",
+    }
+  )
+);
 
 export default usePatientStore;

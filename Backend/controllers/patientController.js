@@ -58,14 +58,14 @@ async function updatePatientInfo(req, res) {
     }
 
     res.status(200).json({
-      message: "Profile updated successfully",
+      message: "Update successful! Phew, that was smoother than taking a sugar pill. 💊",
       patient: updatedPatient,
     });
   } catch (error) {
-    console.error("Update error:", error);
+    console.error("Update error ", error);
     res
       .status(500)
-      .json({ message: "Error updating profile", error: error.message });
+      .json({ message: "Diagnosis: Failed to save.", error: error.message });
   }
 }
 

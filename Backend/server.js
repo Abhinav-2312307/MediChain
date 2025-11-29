@@ -23,9 +23,9 @@ const PORT = process.env.PORT || 5001;
 connectToMongoDB(process.env.MONGO_URI);
 
 // Middleware
+app.use(cookieParser()); // to parse cookies
 app.use(express.json());  // Express built-in middleware to parse JSON
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser()); // to parse cookies
 app.use(express.static('public'));
 
 // to wake up the server
@@ -44,6 +44,13 @@ app.use("/doctor", doctorUploadRoute);
 app.get('/', (req, res) => {
   res.json({ message: "Welcome to MediVault API" });
 });
+
+// to check cookie is generated or not
+app.get("/check-cookie", (req, res) => {
+  console.log("Cookies ->", req.cookies);
+  res.json({ cookies: req.cookies });
+});
+
 
 // Handle 404, if no route matches above
 app.use((req, res) => {
