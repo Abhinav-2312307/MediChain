@@ -58,10 +58,15 @@ async function signup(req, res) {
 
     // Validate required fields
     if (!name || !email || !password) {
-      return res
-        .status(400)
-        // .json({ message: "Name, email, and password are required" });
-        .json({ message: "Missing details! Even Maggi needs at least 2 ingredients." });
+      return (
+        res
+          .status(400)
+          // .json({ message: "Name, email, and password are required" });
+          .json({
+            message:
+              "Missing details! Even Maggi needs at least 2 ingredients.",
+          })
+      );
     }
 
     // Select the correct model based on role
@@ -71,7 +76,12 @@ async function signup(req, res) {
     // Check if user already exists
     const existingUser = await Model.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "This user already exists… just like that one annoying relative." });
+      return res
+        .status(400)
+        .json({
+          message:
+            "This user already exists… just like that one annoying relative.",
+        });
     }
 
     // Generate unique UID
@@ -115,7 +125,8 @@ async function signup(req, res) {
     // Set cookie
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -173,8 +184,8 @@ async function login(req, res) {
     // Set cookie
     res.cookie("token", token, {
       httpOnly: true, // secure from JS access
-      secure: process.env.NODE_ENV === "production", // only HTTPS in prod
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -192,7 +203,7 @@ async function login(req, res) {
     res.status(500).json({
       // message:
       //   "Internal Server Error. Please Try Reloading the page or try again after some time",
-      message:"Server is crying in a corner. Please retry later.",
+      message: "Server is crying in a corner. Please retry later.",
     });
   }
 }
