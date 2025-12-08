@@ -4,13 +4,16 @@ import RoleSelector from "./RoleSelector";
 import { Loader2, Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
-import toast from 'react-hot-toast';
+import toast from "react-hot-toast";
+import usePatientStore from "../Store/PatientStore";
+
 export default function SignupForm() {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_Backend_API_URL;
   const { isDark } = useTheme();
   const [role, setRole] = useState("patient");
   const [loading, setLoading] = useState(false);
+  const { updatePatientData } = usePatientStore.getState();
 
   const [data, setData] = useState({
     firstName: "",
@@ -47,10 +50,16 @@ export default function SignupForm() {
     };
 
     try {
-      await axios.post(`${API_URL}/auth/signup`, payload);
-      navigate(`/dashboard/${role}`);
+      const res = await axios.post(`${API_URL}/auth/signup`, payload, {
+        withCredentials: true,
+      });
+      updatePatientData(res.data.user);
+      navigate(`/patient-portal`);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Login Failed Due to some germs in ur hands" );
+      toast.error(
+        err?.response?.data?.message ||
+          "Login Failed Due to some germs in ur hands"
+      );
       // alert(err?.response?.data?.message || "Signup failed"); // later to implement error or popup
     } finally {
       setLoading(false);
