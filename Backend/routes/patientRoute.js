@@ -9,4 +9,15 @@ const upload = require("../middleware/uploadMiddleware");
 // Update patient info with also profile pic
 router.put("/update", authMiddleware, upload.single("profilePic"), updatePatientInfo);
 
+// Multer error handler for this router
+router.use((err, req, res, next) => {
+  if (err && err.code === "LIMIT_FILE_SIZE") {
+    return res.status(413).json({ message: "Profile picture too large (max 2MB)." });
+  }
+  if (err) {
+    return res.status(400).json({ message: "Upload failed.", error: err.message });
+  }
+  return next();
+});
+
 module.exports = router;

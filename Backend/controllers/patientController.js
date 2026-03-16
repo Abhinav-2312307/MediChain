@@ -1,5 +1,4 @@
 const Patient = require("../models/Patient");
-const cloudinary = require("../config/cloudinary");
 
 async function updatePatientInfo(req, res) {
   try {
@@ -41,10 +40,9 @@ async function updatePatientInfo(req, res) {
     }
 
     if (req.file) {
-      const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-        folder: "patients/profile_pics",
-      });
-      updateFields.profilePic = uploadResult.secure_url;
+      // multer-storage-cloudinary already uploaded the file
+      // and provides the hosted URL in req.file.path
+      updateFields.profilePic = req.file.path;
     }
 
     const updatedPatient = await Patient.findByIdAndUpdate(

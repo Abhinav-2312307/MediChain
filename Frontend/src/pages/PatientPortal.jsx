@@ -1,169 +1,159 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import axios from "axios";
-
+import { useEffect, useState } from "react";
+import PatientSidebar from "../components/portal/PatientSidebar";
 import { useTheme } from "../context/ThemeContext";
-import usePatientStore from "../Store/PatientStore";
-import { DEFAULT_AVATAR, GLASS_CLASSES } from "../components/portal/utils";
+import { Classic } from "@theme-toggles/react";
+import "@theme-toggles/react/css/Classic.css";
 
-// Sub-components
-import PortalNavbar from "../components/portal/PortalNavbar";
-import SettingsModal from "../components/portal/SettingsModal";
-import { LeftPanel, RightPanel } from "../components/portal/SidePanels";
-import CenterViewport from "../components/portal/CenterViewport";
+import Dashboard from "../components/portal/Dashboard/Dashboard";
+import Profile from "../components/portal/Profile/Profile";
+import MedicalHistory from "../components/portal/MedicalHistory/MedicalHistory";
+import CurrentHealth from "../components/portal/CurrentHealth/CurrentHealth";
+import Diagnostics from "../components/portal/Diagnostics/Diagnostics";
+import PatientChat from "../components/portal/Chat/PatientChat";
 
-const API_URL = import.meta.env.VITE_Backend_API_URL || "http://localhost:5001";
+const CACHE_KEY = "medivault_patient_cache_v1";
+const CACHE_TTL_MS = 5 * 60 * 1000;
+
+function readCachedPatient() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.data || !parsed?.ts) return null;
+    if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+    return parsed.data;
+  } catch {
+    return null;
+  }
+}
+
+function writeCachedPatient(data) {
+  try {
+    localStorage.setItem(
+      CACHE_KEY,
+      JSON.stringify({ data, ts: Date.now() })
+    );
+  } catch {
+    // ignore cache write errors
+  }
+}
 
 export default function PatientPortal() {
-  const patient = usePatientStore((state) => state.patientData);
-  const updatePatientData = usePatientStore((state) => state.updatePatientData);
-  const clearPatientData = usePatientStore((state) => state.clearPatientData);
-
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [patient, setPatient] = useState(() => readCachedPatient());
+  const [loading, setLoading] = useState(!patient);
+  const [error, setError] = useState("");
   const { isDark, toggleTheme } = useTheme();
-  const navigate = useNavigate();
-
-  // UI State
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isLayoutReady, setIsLayoutReady] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
-
-  // Redirect if patient data not found
-  useEffect(() => {
-    if (!patient) navigate("/login");
-  }, [patient]);
-
-  // Load animation
-  useEffect(() => {
-    toast.success("Welcome to the Portal!");
-  }, []);
 
   useEffect(() => {
-    let mounted = true;
-    setLoading(true);
+    let cancelled = false;
 
-    setTimeout(() => {
-      if (mounted) {
+    async function loadPatient() {
+      const cached = readCachedPatient();
+      if (cached) {
+        setPatient(cached);
         setLoading(false);
-        setTimeout(() => mounted && setIsLayoutReady(true), 150);
-      }
-    }, 500);
-
-    return () => (mounted = false);
-  }, []);
-
-  // --- ACTIONS ---
-  const handleSaveProfile = async (formDataInput) => {
-    const formData = new FormData();
-
-    if (formDataInput.bloodGroup) formData.append("bloodGroup", formDataInput.bloodGroup);
-    if (formDataInput.address) formData.append("address", formDataInput.address);
-    if (formDataInput.phone) formData.append("phone", formDataInput.phone);
-
-    if (formDataInput.ecName) formData.append("emergencyContactName", formDataInput.ecName);
-    if (formDataInput.ecRelation) formData.append("emergencyContactRelation", formDataInput.ecRelation);
-    if (formDataInput.ecPhone) formData.append("emergencyContactPhone", formDataInput.ecPhone);
-
-    if (formDataInput.profilePicFile) {
-      formData.append("profilePic", formDataInput.profilePicFile);
-    }
-
-    try {
-      const response = await axios.put(`${API_URL}/patient/update`, formData, {
-        withCredentials: true,
-      });
-
-      const updatedPatientData = response.data.patient;
-      updatePatientData(updatedPatientData);
-
-      toast.success("Profile updated successfully!");
-      setIsSettingsOpen(false);
-    } catch (error) {
-      console.error("API Update Error:", error);
-
-      if (error.response?.status === 401) {
-        toast.error("Session expired. Please login again.");
-        navigate("/login");
         return;
       }
 
-      toast.error(error.response?.data?.message || "Error updating profile.");
+      setLoading(true);
+      setError("");
+
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_Backend_API_URL}/dashboard/patient/data`,
+          { credentials: "include" }
+        );
+
+        if (!res.ok) {
+          throw new Error(`Request failed: ${res.status}`);
+        }
+
+        const data = await res.json();
+        if (!cancelled) {
+          setPatient(data?.patient || null);
+          setLoading(false);
+          writeCachedPatient(data?.patient || null);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError("Unable to load patient data.");
+          setLoading(false);
+        }
+      }
     }
-  };
 
-  const handleLogout = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/auth/logout`, { withCredentials: true });
-      clearPatientData(); // clears Zustand persisted data
-      toast.success(res?.data?.message || "Logged out successfully");
-      navigate("/login");
-    } catch (error) {
-      toast.error("Error logging out");
-      navigate("/login");
-    }
-  };
+    loadPatient();
 
-  // Calculate BMI percentage for UI
-  let bodyPercent = 80;
-  if (patient?.diagnostics?.vitalSigns?.bmi) {
-    const bmi = parseFloat(patient.diagnostics.vitalSigns.bmi);
-    if (isFinite(bmi))
-      bodyPercent = Math.max(30, Math.min(98, Math.round(100 - Math.abs(22 - bmi) * 4)));
-  }
-
-  // --- RENDER ---
-  if (loading || !patient) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-indigo-50 dark:bg-slate-950">
-        <div className={`${GLASS_CLASSES} p-6`}>
-          Loading patient dashboard...
-        </div>
-      </div>
-    );
-  }
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
-    <div className="h-screen w-full flex flex-col bg-gradient-to-b from-[#e8efff] to-[#e6eefc] dark:from-slate-950 dark:to-slate-900">
-      <PortalNavbar
-        patient={patient}
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+
+      <PatientSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        isDark={isDark}
-        toggleTheme={toggleTheme}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-        onLogout={handleLogout}
       />
 
-      <div className="flex-1 p-4 min-h-0 relative z-0">
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "360px 1fr 360px",
-            gap: 18,
-            height: "calc(100vh - 100px)",
-          }}
-        >
-          <div className="overflow-y-auto pr-1 custom-scrollbar">
-            <LeftPanel patient={patient} bodyPercent={bodyPercent} />
+      <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 dark:text-slate-100">
+              Patient Portal
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Welcome back{patient?.name ? `, ${patient.name}` : ""}.
+            </p>
           </div>
 
-          <div className="h-full min-h-0 relative rounded-2xl overflow-hidden">
-            {isLayoutReady && <CenterViewport patient={patient} activeTab={activeTab} />}
-          </div>
+          <Classic
+            duration={750}
+            toggled={isDark}
+            onClick={toggleTheme}
+            className="text-slate-600 dark:text-yellow-400 transition-all text-4xl flex items-center justify-center"
+            aria-label="Toggle Theme"
+          />
+        </div>
 
-          <div className="overflow-y-auto pl-1 custom-scrollbar">
-            <RightPanel patient={patient} />
-          </div>
+        <div className="rounded-3xl bg-white/80 dark:bg-slate-900/80 border border-slate-200/60 dark:border-slate-800/60 shadow-sm backdrop-blur p-4 sm:p-6">
+          {loading && (
+            <div className="text-slate-500 dark:text-slate-400">
+              Loading patient data...
+            </div>
+          )}
+
+          {!loading && error && (
+            <div className="text-red-600">{error}</div>
+          )}
+
+          {!loading && !error && activeTab === "dashboard" && (
+            <Dashboard patient={patient} />
+          )}
+
+          {!loading && !error && activeTab === "profile" && (
+            <Profile patient={patient} setPatient={setPatient} />
+          )}
+
+          {!loading && !error && activeTab === "history" && (
+            <MedicalHistory patient={patient} />
+          )}
+
+          {!loading && !error && activeTab === "health" && (
+            <CurrentHealth patient={patient} />
+          )}
+
+          {!loading && !error && activeTab === "diagnostics" && (
+            <Diagnostics patient={patient} />
+          )}
+
+          {!loading && !error && activeTab === "chat" && (
+            <PatientChat patient={patient} />
+          )}
         </div>
       </div>
-
-      <SettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        patient={patient}
-        onSave={handleSaveProfile}
-      />
     </div>
   );
 }
