@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import RoleSelector from "./RoleSelector";
 import { Loader2, Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import usePatientStore from "../Store/PatientStore";
+import usePatientStore from "../store/usePatientStore";
 
 export default function SignupForm() {
   const navigate = useNavigate();

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import usePatientStore from "../Store/PatientStore.jsx";
+import usePatientStore from "../store/usePatientStore";
 
 export default function LoginForm() {
   const setPatientData = usePatientStore((state) => state.setPatientData);
