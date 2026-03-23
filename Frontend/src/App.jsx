@@ -1,16 +1,18 @@
-import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { useEffect } from "react";
-import { ThemeProvider } from "./context/ThemeContext";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 
+import { loadUserFromStorage } from "./features/auth/authThunks";
+import { useAppDispatch } from "./hooks/reduxHooks";
+import { ThemeProvider } from "./context/ThemeContext";
 import PatientLayout from "./layouts/PatientLayout";
 import Home from "./pages/Home";
+import Signup from "./pages/SignupLoginPage";
 import ChatPage from "./pages/patient/ChatPage";
 import DashboardPage from "./pages/patient/DashboardPage";
 import DiagnosticsPage from "./pages/patient/DiagnosticsPage";
 import MedicalPage from "./pages/patient/MedicalPage";
 import PatientPageIndex from "./pages/patient/PatientPageIndex";
 import ProfilePage from "./pages/patient/ProfilePage";
-import Signup from "./pages/SignupLoginPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
@@ -28,6 +30,12 @@ function renderPatientRoutes() {
 }
 
 export default function App() {
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    void dispatch(loadUserFromStorage());
+  }, [dispatch]);
+
   useEffect(() => {
     fetch(`${import.meta.env.VITE_Backend_API_URL}/health`)
       .then(() => console.log("Backend is awake"))

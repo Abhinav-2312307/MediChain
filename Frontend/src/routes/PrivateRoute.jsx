@@ -1,18 +1,13 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-function getStoredToken() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return localStorage.getItem("token") || localStorage.getItem("medichain_token");
-}
+import { selectIsAuthenticated } from "../features/auth/authSelectors";
+import { useAppSelector } from "../hooks/reduxHooks";
 
 export default function PrivateRoute() {
   const location = useLocation();
-  const token = getStoredToken();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 

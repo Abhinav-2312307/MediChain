@@ -1,15 +1,33 @@
 const Patient = require("../models/Patient");
 
-async function updatePatientInfo(req, res) {
+async function getPatientProfile(req, res) {
   try {
-    // Only patients are allowed
     if (req.user.role !== "patient") {
       return res.status(403).json({ message: "Access denied. Patients only." });
     }
 
-    const patientId = req.user.id;
+    const patient = await Patient.findById(req.user.id).select("-password");
 
-    // Allowed fields only
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found." });
+    }
+
+    return res.status(200).json({ patient });
+  } catch (error) {
+    console.error("Profile fetch error:", error);
+    return res.status(500).json({
+      message: "Unable to fetch patient profile.",
+      error: error.message,
+    });
+  }
+}
+
+async function updatePatientInfo(req, res) {
+  try {
+    if (req.user.role !== "patient") {
+      return res.status(403).json({ message: "Access denied. Patients only." });
+    }
+
     const {
       bloodGroup,
       address,
@@ -20,51 +38,55 @@ async function updatePatientInfo(req, res) {
     } = req.body;
 
     const updateFields = {};
+
     if (bloodGroup) updateFields.bloodGroup = bloodGroup;
     if (address) updateFields.address = address;
     if (phone) updateFields.phone = phone;
 
-    // Handle emergency contact as an object
-    if (
-      emergencyContactName ||
-      emergencyContactRelation ||
-      emergencyContactPhone
-    ) {
+    if (emergencyContactName || emergencyContactRelation || emergencyContactPhone) {
       updateFields.emergencyContact = {};
-      if (emergencyContactName)
+
+      if (emergencyContactName) {
         updateFields.emergencyContact.name = emergencyContactName;
-      if (emergencyContactRelation)
+      }
+
+      if (emergencyContactRelation) {
         updateFields.emergencyContact.relation = emergencyContactRelation;
-      if (emergencyContactPhone)
+      }
+
+      if (emergencyContactPhone) {
         updateFields.emergencyContact.phone = emergencyContactPhone;
+      }
     }
 
     if (req.file) {
-      // multer-storage-cloudinary already uploaded the file
-      // and provides the hosted URL in req.file.path
       updateFields.profilePic = req.file.path;
     }
 
     const updatedPatient = await Patient.findByIdAndUpdate(
-      patientId,
+      req.user.id,
       { $set: updateFields },
       { new: true, runValidators: true }
     ).select("-password");
 
     if (!updatedPatient) {
-      return res.status(404).json({ message: "Patient not found" });
+      return res.status(404).json({ message: "Patient not found." });
     }
 
-    res.status(200).json({
-      message: "Update successful! Phew, that was smoother than taking a sugar pill. 💊",
+    return res.status(200).json({
+      message: "Patient profile updated successfully.",
       patient: updatedPatient,
     });
   } catch (error) {
-    console.error("Update error ", error);
-    res
-      .status(500)
-      .json({ message: "Diagnosis: Failed to save.", error: error.message });
+    console.error("Profile update error:", error);
+    return res.status(500).json({
+      message: "Unable to update patient profile.",
+      error: error.message,
+    });
   }
 }
 
-module.exports = { updatePatientInfo };
+module.exports = {
+  getPatientProfile,
+  updatePatientInfo,
+};

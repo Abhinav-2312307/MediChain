@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import SignupForm from "../components/SignupForm";
 import LoginForm from "../components/LoginForm";
 import Navbar from "../components/Navbar";
@@ -27,8 +27,6 @@ export default function SignupLoginPage() {
   const mode = location.pathname === "/login" ? "signin" : "signup";
 
   const { isDark } = useTheme();
-
-  const typewriterTexts = mode === "signup" ? signupTexts : loginTexts;
 
   return (
     <div

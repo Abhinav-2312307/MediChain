@@ -1,7 +1,6 @@
-'use client';;
-import * as React from 'react';
-import { motion } from 'motion/react';
-import { cva } from 'class-variance-authority';
+"use client";
+import * as React from "react";
+import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
@@ -11,38 +10,32 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'text-primary hover:text-primary-foreground !bg-muted [--liquid-button-color:var(--primary)]',
+          "text-primary hover:text-primary-foreground !bg-muted [--liquid-button-color:var(--primary)]",
         outline:
-          'border !bg-background dark:!bg-input/30 dark:border-input [--liquid-button-color:var(--primary)]',
+          "border !bg-background dark:!bg-input/30 dark:border-input [--liquid-button-color:var(--primary)]",
         secondary:
-          'text-secondary hover:text-secondary-foreground !bg-muted [--liquid-button-color:var(--secondary)]',
+          "text-secondary hover:text-secondary-foreground !bg-muted [--liquid-button-color:var(--secondary)]",
       },
       size: {
-        default: 'h-10 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-9 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-12 rounded-xl px-8 has-[>svg]:px-6',
-        icon: 'size-10',
+        default: "h-10 px-4 py-2 has-[>svg]:px-3",
+        sm: "h-9 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
+        lg: "h-12 rounded-xl px-8 has-[>svg]:px-6",
+        icon: "size-10",
       },
     },
     defaultVariants: {
-      variant: 'default',
-      size: 'default',
+      variant: "default",
+      size: "default",
     },
   }
 );
 
-function LiquidButton({
-  className,
-  variant,
-  size,
-  ...props
-}) {
+function LiquidButton({ className, variant, size, ...props }) {
   return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
-      whileHover={{ scale: 1.05 }}
+    <button
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
+      {...props}
+    />
   );
 }
 

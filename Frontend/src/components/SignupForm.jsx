@@ -1,20 +1,22 @@
 import { useState } from "react";
-import RoleSelector from "./RoleSelector";
 import { Loader2 } from "lucide-react";
-import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+
+import { useTheme } from "../context/ThemeContext";
+import { selectAuthError, selectAuthLoading } from "../features/auth/authSelectors";
+import { signupWithCredentials } from "../features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import GoogleLoginButton from "./auth/GoogleLoginButton";
-import { persistAuthSession, signupWithCredentials } from "../api/authApi";
-import usePatientStore from "../store/usePatientStore";
+import RoleSelector from "./RoleSelector";
 
 export default function SignupForm() {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { isDark } = useTheme();
+  const loading = useAppSelector(selectAuthLoading);
+  const error = useAppSelector(selectAuthError);
   const [role, setRole] = useState("patient");
-  const [loading, setLoading] = useState(false);
-  const { updatePatientData } = usePatientStore.getState();
-
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -26,13 +28,15 @@ export default function SignupForm() {
     licenseNumber: "",
   });
 
-  const handle = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const handle = (event) => {
+    setData((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const submit = async (event) => {
+    event.preventDefault();
 
     const payload = {
       name: `${data.firstName} ${data.lastName}`.trim(),
@@ -50,17 +54,11 @@ export default function SignupForm() {
     };
 
     try {
-      const response = await signupWithCredentials(payload);
-      persistAuthSession(response);
-      updatePatientData(response.user);
+      const response = await dispatch(signupWithCredentials(payload)).unwrap();
       navigate(response.redirectTo || "/patient");
-    } catch (err) {
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to complete signup."
-      );
-    } finally {
-      setLoading(false);
+      toast.success("Account created successfully.");
+    } catch (message) {
+      toast.error(message || "Unable to complete signup.");
     }
   };
 
@@ -70,17 +68,17 @@ export default function SignupForm() {
 
       <form
         onSubmit={submit}
-        className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
+        className="animate-in fade-in slide-in-from-bottom-4 space-y-4 duration-500"
       >
         <div className="grid grid-cols-2 gap-4">
           <input
             name="firstName"
             onChange={handle}
             placeholder="First name"
-            className={`px-4 py-3 rounded-xl border transition ${
+            className={`rounded-xl border px-4 py-3 transition ${
               isDark
-                ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             }`}
             required
           />
@@ -88,10 +86,10 @@ export default function SignupForm() {
             name="lastName"
             onChange={handle}
             placeholder="Last name"
-            className={`px-4 py-3 rounded-xl border transition ${
+            className={`rounded-xl border px-4 py-3 transition ${
               isDark
-                ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             }`}
             required
           />
@@ -102,10 +100,10 @@ export default function SignupForm() {
           type="email"
           onChange={handle}
           placeholder="Enter your email"
-          className={`w-full px-4 py-3 rounded-xl border transition ${
+          className={`w-full rounded-xl border px-4 py-3 transition ${
             isDark
-              ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           }`}
           required
         />
@@ -115,30 +113,27 @@ export default function SignupForm() {
             name="dob"
             type="date"
             onChange={handle}
-            className={`px-4 py-3 rounded-xl border transition ${
+            className={`rounded-xl border px-4 py-3 transition ${
               isDark
-                ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             }`}
             required
           />
           <select
             name="gender"
             onChange={handle}
-            className={`px-4 py-3 rounded-xl border transition ${
+            className={`rounded-xl border px-4 py-3 transition ${
               isDark
-                ? "bg-black/30 border-white/10 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                : "bg-white/60 border-blue-200/50 text-black focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                ? "border-white/10 bg-black/30 text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                : "border-blue-200/50 bg-white/60 text-black focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             }`}
             required
           >
             <option value="" className={isDark ? "bg-neutral-800" : "bg-white"}>
               Select Gender
             </option>
-            <option
-              value="Male"
-              className={isDark ? "bg-neutral-800" : "bg-white"}
-            >
+            <option value="Male" className={isDark ? "bg-neutral-800" : "bg-white"}>
               Male
             </option>
             <option
@@ -147,10 +142,7 @@ export default function SignupForm() {
             >
               Female
             </option>
-            <option
-              value="Other"
-              className={isDark ? "bg-neutral-800" : "bg-white"}
-            >
+            <option value="Other" className={isDark ? "bg-neutral-800" : "bg-white"}>
               Other
             </option>
           </select>
@@ -161,24 +153,24 @@ export default function SignupForm() {
           type="password"
           onChange={handle}
           placeholder="Password"
-          className={`w-full px-4 py-3 rounded-xl border transition ${
+          className={`w-full rounded-xl border px-4 py-3 transition ${
             isDark
-              ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-              : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           }`}
           required
         />
 
-        {role === "doctor" && (
-          <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+        {role === "doctor" ? (
+          <div className="animate-in fade-in zoom-in-95 space-y-4 duration-300">
             <input
               name="specialization"
               onChange={handle}
               placeholder="Specialization"
-              className={`w-full px-4 py-3 rounded-xl border transition ${
+              className={`w-full rounded-xl border px-4 py-3 transition ${
                 isDark
-                  ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               }`}
               required
             />
@@ -186,41 +178,43 @@ export default function SignupForm() {
               name="licenseNumber"
               onChange={handle}
               placeholder="License Number"
-              className={`w-full px-4 py-3 rounded-xl border transition ${
+              className={`w-full rounded-xl border px-4 py-3 transition ${
                 isDark
-                  ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               }`}
               required
             />
           </div>
-        )}
+        ) : null}
 
         <button
           disabled={loading}
-          className={`w-full py-3.5 rounded-xl font-bold transition-colors disabled:opacity-70 flex justify-center items-center gap-2 cursor-pointer ${
+          className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl py-3.5 font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-70 ${
             isDark
-              ? "bg-white hover:bg-neutral-200 text-black"
-              : "bg-blue-600 hover:bg-blue-700 text-white"
+              ? "bg-white text-black hover:bg-neutral-200"
+              : "bg-blue-600 text-white hover:bg-blue-700"
           }`}
         >
-          {loading && <Loader2 className="animate-spin" size={18} />}
+          {loading ? <Loader2 className="animate-spin" size={18} /> : null}
           {loading ? "Creating..." : "Create an account"}
         </button>
 
+        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+
         <div
-          className={`flex items-center gap-4 my-4 text-xs uppercase tracking-widest font-semibold ${
+          className={`my-4 flex items-center gap-4 text-xs font-semibold uppercase tracking-widest ${
             isDark ? "text-neutral-500" : "text-gray-600"
           }`}
         >
           <div
-            className={`flex-1 h-px ${
+            className={`h-px flex-1 ${
               isDark ? "bg-white/10" : "bg-blue-200/30"
             }`}
           />
           Or continue with
           <div
-            className={`flex-1 h-px ${
+            className={`h-px flex-1 ${
               isDark ? "bg-white/10" : "bg-blue-200/30"
             }`}
           />

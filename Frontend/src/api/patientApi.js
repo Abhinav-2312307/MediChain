@@ -1,16 +1,16 @@
 import api from "./axios";
 
-export async function getPatientData() {
-  const response = await api.get("/dashboard/patient/data");
-  return response.data?.patient || null;
+export async function fetchPatientProfileRequest() {
+  const response = await api.get("/patient/profile");
+  return response.data?.patient ?? null;
 }
 
-export async function updatePatientProfile(payload) {
-  const response = await api.put("/patient/update", payload, {
+export async function updatePatientProfileRequest(payload) {
+  const response = await api.patch("/patient/profile", payload, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 
-  return response.data?.patient || null;
+  return response.data?.patient ?? null;
 }

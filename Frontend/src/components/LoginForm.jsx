@@ -1,44 +1,40 @@
 import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import { useTheme } from "../context/ThemeContext";
+import { selectAuthError, selectAuthLoading } from "../features/auth/authSelectors";
+import { loginWithCredentials } from "../features/auth/authThunks";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import GoogleLoginButton from "./auth/GoogleLoginButton";
-import { loginWithCredentials, persistAuthSession } from "../api/authApi";
-import usePatientStore from "../store/usePatientStore";
 
 export default function LoginForm() {
-  const setPatientData = usePatientStore((state) => state.setPatientData);
-
-  const { isDark } = useTheme();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { isDark } = useTheme();
+  const loading = useAppSelector(selectAuthLoading);
+  const error = useAppSelector(selectAuthError);
   const [data, setData] = useState({
     email: "",
     password: "",
   });
 
-  const handle = (e) => {
-    setData({ ...data, [e.target.name]: e.target.value });
+  const handle = (event) => {
+    setData((current) => ({
+      ...current,
+      [event.target.name]: event.target.value,
+    }));
   };
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const submit = async (event) => {
+    event.preventDefault();
 
     try {
-      const response = await loginWithCredentials(data);
-      persistAuthSession(response);
-      setPatientData(response.user);
+      const response = await dispatch(loginWithCredentials(data)).unwrap();
       navigate(response.redirectTo || "/patient");
       toast.success("Login successful.");
-    } catch (err) {
-      toast.error(
-        err?.response?.data?.message ||
-          "Unable to complete login."
-      );
-    } finally {
-      setLoading(false);
+    } catch (message) {
+      toast.error(message || "Unable to complete login.");
     }
   };
 
@@ -48,10 +44,10 @@ export default function LoginForm() {
         name="email"
         onChange={handle}
         placeholder="Enter your email"
-        className={`w-full px-4 py-3 rounded-lg border transition ${
+        className={`w-full rounded-lg border px-4 py-3 transition ${
           isDark
-            ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         }`}
         required
       />
@@ -61,17 +57,17 @@ export default function LoginForm() {
         name="password"
         onChange={handle}
         placeholder="Password"
-        className={`w-full px-4 py-3 rounded-lg border transition ${
+        className={`w-full rounded-lg border px-4 py-3 transition ${
           isDark
-            ? "bg-black/30 border-white/10 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            : "bg-white/60 border-blue-200/50 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            ? "border-white/10 bg-black/30 text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            : "border-blue-200/50 bg-white/60 text-black placeholder-gray-600 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         }`}
         required
       />
 
       <button
         disabled={loading}
-        className={`w-full py-3 rounded-lg font-medium transition-colors cursor-pointer ${
+        className={`w-full cursor-pointer rounded-lg py-3 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-70 ${
           isDark
             ? "bg-white text-black hover:bg-neutral-200"
             : "bg-blue-600 text-white hover:bg-blue-700"
@@ -80,17 +76,19 @@ export default function LoginForm() {
         {loading ? "Signing in..." : "Sign in"}
       </button>
 
+      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+
       <div
-        className={`flex items-center gap-4 my-4 text-sm uppercase font-semibold ${
+        className={`my-4 flex items-center gap-4 text-sm font-semibold uppercase ${
           isDark ? "text-neutral-400" : "text-gray-600"
         }`}
       >
         <div
-          className={`flex-1 h-px ${isDark ? "bg-white/10" : "bg-blue-200/30"}`}
+          className={`h-px flex-1 ${isDark ? "bg-white/10" : "bg-blue-200/30"}`}
         />
         OR CONTINUE WITH
         <div
-          className={`flex-1 h-px ${isDark ? "bg-white/10" : "bg-blue-200/30"}`}
+          className={`h-px flex-1 ${isDark ? "bg-white/10" : "bg-blue-200/30"}`}
         />
       </div>
 

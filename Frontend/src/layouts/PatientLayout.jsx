@@ -1,9 +1,18 @@
+import { useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { Classic } from "@theme-toggles/react";
 import { Activity, FileText, Heart, MessageCircle, User } from "lucide-react";
+
 import "@theme-toggles/react/css/Classic.css";
-import usePatient from "../hooks/usePatient";
 import Loader from "../components/ui/Loader";
+import { selectCurrentUser, selectIsAuthenticated } from "../features/auth/authSelectors";
+import {
+  selectPatientData,
+  selectPatientError,
+  selectPatientLoading,
+} from "../features/patient/patientSelectors";
+import { fetchPatientProfile } from "../features/patient/patientThunks";
+import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { useTheme } from "../context/ThemeContext";
 
 const navItems = [
@@ -14,9 +23,30 @@ const navItems = [
   { to: "chat", label: "Chat", icon: MessageCircle },
 ];
 
+function getPatientFallback(user) {
+  if (!user?.name && !user?.email) {
+    return null;
+  }
+
+  return user;
+}
+
 export default function PatientLayout() {
-  const { patient, loading, error, setPatient } = usePatient();
+  const dispatch = useAppDispatch();
   const { isDark, toggleTheme } = useTheme();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const authUser = useAppSelector(selectCurrentUser);
+  const patientProfile = useAppSelector(selectPatientData);
+  const loading = useAppSelector(selectPatientLoading);
+  const error = useAppSelector(selectPatientError);
+
+  const patient = patientProfile ?? getPatientFallback(authUser);
+
+  useEffect(() => {
+    if (isAuthenticated && !patientProfile && !loading) {
+      void dispatch(fetchPatientProfile());
+    }
+  }, [dispatch, isAuthenticated, loading, patientProfile]);
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -67,9 +97,30 @@ export default function PatientLayout() {
         </div>
 
         <div className="rounded-3xl border border-slate-200/60 bg-white/80 p-4 shadow-sm backdrop-blur dark:border-slate-800/60 dark:bg-slate-900/80 sm:p-6">
-          {loading && !patient ? <Loader label="Loading patient data..." /> : null}
-          {!loading && error ? <div className="text-red-600">{error}</div> : null}
-          {!error && patient ? <Outlet context={{ patient, setPatient }} /> : null}
+          {loading && !patient ? <Loader label="Loading patient profile..." /> : null}
+
+          {error ? (
+            <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p>{error}</p>
+                <button
+                  type="button"
+                  onClick={() => void dispatch(fetchPatientProfile({ force: true }))}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {patient ? (
+            <Outlet context={{ patient }} />
+          ) : !loading && !error ? (
+            <div className="text-slate-500 dark:text-slate-400">
+              No patient profile is available yet.
+            </div>
+          ) : null}
         </div>
       </main>
     </div>

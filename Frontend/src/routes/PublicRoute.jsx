@@ -1,17 +1,12 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-function getStoredToken() {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return localStorage.getItem("token") || localStorage.getItem("medichain_token");
-}
+import { selectIsAuthenticated } from "../features/auth/authSelectors";
+import { useAppSelector } from "../hooks/reduxHooks";
 
 export default function PublicRoute() {
-  const token = getStoredToken();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
 
-  if (token) {
+  if (isAuthenticated) {
     return <Navigate to="/patient" replace />;
   }
 
