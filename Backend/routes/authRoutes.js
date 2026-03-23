@@ -1,16 +1,23 @@
 const express = require("express");
+
+const { googleAuth, signup, login } = require("../controllers/authController");
+
 const router = express.Router();
-const { signup, login } = require("../controllers/authController");
 
-// Signup route
 router.post("/signup", signup);
-
 router.post("/login", login);
+router.post("/google", googleAuth);
 
-// logout route
 router.get("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "Sayonara... さよなら..." });
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+
+  res.json({ message: "Logged out successfully." });
 });
 
 module.exports = router;

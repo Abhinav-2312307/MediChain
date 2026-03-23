@@ -1,18 +1,18 @@
 import { useState } from "react";
-import axios from "axios";
-import { Chrome } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import GoogleLoginButton from "./auth/GoogleLoginButton";
+import { loginWithCredentials, persistAuthSession } from "../api/authApi";
 import usePatientStore from "../store/usePatientStore";
 
 export default function LoginForm() {
   const setPatientData = usePatientStore((state) => state.setPatientData);
 
-  const API_URL = import.meta.env.VITE_Backend_API_URL;
   const { isDark } = useTheme();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -24,22 +24,21 @@ export default function LoginForm() {
 
   const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, data, {
-        withCredentials: true,
-      });
-
-      console.log(response.data.user);
-      setPatientData(response.data.user);
-
-      navigate(response.data.redirectTo);
-      toast.success("wooof u made it !!");
+      const response = await loginWithCredentials(data);
+      persistAuthSession(response);
+      setPatientData(response.user);
+      navigate(response.redirectTo || "/patient-portal/dashboard");
+      toast.success("Login successful.");
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
-          "Server is crying in a corner. Please retry later. !!! "
-      ); // login poop up
-      // alert(err?.response?.data?.message || "Login failed"); // later to implement error or popup
+          "Unable to complete login."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,13 +70,14 @@ export default function LoginForm() {
       />
 
       <button
+        disabled={loading}
         className={`w-full py-3 rounded-lg font-medium transition-colors cursor-pointer ${
           isDark
             ? "bg-white text-black hover:bg-neutral-200"
             : "bg-blue-600 text-white hover:bg-blue-700"
         }`}
       >
-        Sign in
+        {loading ? "Signing in..." : "Sign in"}
       </button>
 
       <div
@@ -94,17 +94,7 @@ export default function LoginForm() {
         />
       </div>
 
-      <button
-        type="button"
-        className={`w-full py-3 rounded-lg border transition flex items-center justify-center gap-2 font-medium ${
-          isDark
-            ? "bg-black/40 border-white/10 text-white hover:bg-white/5"
-            : "bg-white/50 border-blue-200/30 text-black hover:bg-blue-50"
-        }`}
-      >
-        <Chrome size={18} />
-        Google
-      </button>
+      <GoogleLoginButton />
     </form>
   );
 }

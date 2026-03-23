@@ -6,19 +6,7 @@ const developers = [
   {
     name: "Adarsh Sachan",
     linkedIn: "https://www.linkedin.com/in/adarshsachan01/",
-  },
-  {
-    name: "Abhinav Sahu",
-    linkedIn: "https://www.linkedin.com/in/abhinav-sahu-865a01297/",
-  },
-  {
-    name: "Abhinav",
-    linkedIn: "https://www.linkedin.com/in/abhinav-kumar-10a942262/",
-  },
-  {
-    name: "Abhijeet Rai",
-    linkedIn: "https://www.linkedin.com/in/abhijeet-rai-0a740b27a/",
-  },
+  }
 ];
 
 export default function Footer() {

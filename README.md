@@ -161,7 +161,5 @@ Want to improve **MediChain**? Follow these steps to safely contribute:
 ## Developers
 
 - [Adarsh Sachan](https://www.linkedin.com/in/adarshsachan01/) 🔗
-- [Abhinav Sahu](https://www.linkedin.com/in/abhinav-sahu-865a01297/) 🔗
-- [Only Abhinav](https://www.linkedin.com/in/abhinav-kumar-10a942262/) 🔗
 
 ---

@@ -1,15 +1,15 @@
 import { useState } from "react";
-import axios from "axios";
 import RoleSelector from "./RoleSelector";
-import { Loader2, Chrome } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import GoogleLoginButton from "./auth/GoogleLoginButton";
+import { persistAuthSession, signupWithCredentials } from "../api/authApi";
 import usePatientStore from "../store/usePatientStore";
 
 export default function SignupForm() {
   const navigate = useNavigate();
-  const API_URL = import.meta.env.VITE_Backend_API_URL;
   const { isDark } = useTheme();
   const [role, setRole] = useState("patient");
   const [loading, setLoading] = useState(false);
@@ -50,17 +50,15 @@ export default function SignupForm() {
     };
 
     try {
-      const res = await axios.post(`${API_URL}/auth/signup`, payload, {
-        withCredentials: true,
-      });
-      updatePatientData(res.data.user);
-      navigate(`/patient-portal`);
+      const response = await signupWithCredentials(payload);
+      persistAuthSession(response);
+      updatePatientData(response.user);
+      navigate(response.redirectTo || "/patient-portal/dashboard");
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||
-          "Login Failed Due to some germs in ur hands"
+          "Unable to complete signup."
       );
-      // alert(err?.response?.data?.message || "Signup failed"); // later to implement error or popup
     } finally {
       setLoading(false);
     }
@@ -228,17 +226,10 @@ export default function SignupForm() {
           />
         </div>
 
-        <button
-          type="button"
-          className={`w-full py-3 rounded-xl border transition flex items-center justify-center gap-2 font-medium ${
-            isDark
-              ? "bg-black/40 border-white/10 text-white hover:bg-white/5"
-              : "bg-white/50 border-blue-200/30 text-black hover:bg-blue-50"
-          }`}
-        >
-          <Chrome size={18} />
-          Google
-        </button>
+        <GoogleLoginButton
+          disabled={role !== "patient"}
+          disabledText="Google sign-up is currently available for patients only."
+        />
       </form>
     </>
   );

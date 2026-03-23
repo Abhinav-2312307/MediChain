@@ -4,14 +4,23 @@ const bcrypt = require("bcrypt");
 const patientSchema = new mongoose.Schema(
   {
     uid: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    dob: { type: Date, required: true },
-    gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, trim: true, lowercase: true },
+    password: { type: String },
+    dob: { type: Date },
+    gender: { type: String, enum: ["Male", "Female", "Other"] },
+    authProviders: {
+      google: {
+        firebaseUid: String,
+        linkedAt: Date,
+      },
+    },
 
     // editable by patient
-    profilePic: { type: String, default: "https://avatar.iran.liara.run/public/boy?username=Ash" },
+    profilePic: {
+      type: String,
+      default: "https://avatar.iran.liara.run/public/boy?username=Ash",
+    },
     bloodGroup: String,
     address: String,
     phone: String,
@@ -81,7 +90,7 @@ const patientSchema = new mongoose.Schema(
 
 // Hash password before saving
 patientSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  if (!this.isModified("password") || !this.password) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
