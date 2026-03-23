@@ -30,7 +30,7 @@ export default function LoginForm() {
       const response = await loginWithCredentials(data);
       persistAuthSession(response);
       setPatientData(response.user);
-      navigate(response.redirectTo || "/patient-portal/dashboard");
+      navigate(response.redirectTo || "/patient");
       toast.success("Login successful.");
     } catch (err) {
       toast.error(

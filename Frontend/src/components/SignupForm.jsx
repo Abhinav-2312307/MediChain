@@ -53,7 +53,7 @@ export default function SignupForm() {
       const response = await signupWithCredentials(payload);
       persistAuthSession(response);
       updatePatientData(response.user);
-      navigate(response.redirectTo || "/patient-portal/dashboard");
+      navigate(response.redirectTo || "/patient");
     } catch (err) {
       toast.error(
         err?.response?.data?.message ||

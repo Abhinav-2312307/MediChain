@@ -44,7 +44,7 @@ export default function GoogleLoginButton({
 
       persistAuthSession(response);
       setPatientData(response.user);
-      navigate(response.redirectTo || "/patient-portal/dashboard");
+      navigate(response.redirectTo || "/patient");
       toast.success("Google login successful.");
     } catch (error) {
       console.error("Google login error:", error);

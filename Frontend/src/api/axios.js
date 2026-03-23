@@ -6,7 +6,8 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("medichain_token");
+  const token =
+    localStorage.getItem("token") || localStorage.getItem("medichain_token");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

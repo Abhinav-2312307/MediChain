@@ -11,6 +11,21 @@ import MedicalPage from "./pages/patient/MedicalPage";
 import PatientPageIndex from "./pages/patient/PatientPageIndex";
 import ProfilePage from "./pages/patient/ProfilePage";
 import Signup from "./pages/SignupLoginPage";
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicRoute from "./routes/PublicRoute";
+
+function renderPatientRoutes() {
+  return (
+    <>
+      <Route index element={<PatientPageIndex />} />
+      <Route path="dashboard" element={<DashboardPage />} />
+      <Route path="profile" element={<ProfilePage />} />
+      <Route path="medical" element={<MedicalPage />} />
+      <Route path="diagnostics" element={<DiagnosticsPage />} />
+      <Route path="chat" element={<ChatPage />} />
+    </>
+  );
+}
 
 export default function App() {
   useEffect(() => {
@@ -24,16 +39,21 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Signup />} />
-          <Route path="/patient-portal" element={<PatientLayout />}>
-            <Route index element={<PatientPageIndex />} />
-            <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="medical" element={<MedicalPage />} />
-            <Route path="diagnostics" element={<DiagnosticsPage />} />
-            <Route path="chat" element={<ChatPage />} />
+
+          <Route element={<PublicRoute />}>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Signup />} />
           </Route>
+
+          <Route element={<PrivateRoute />}>
+            <Route path="/patient" element={<PatientLayout />}>
+              {renderPatientRoutes()}
+            </Route>
+            <Route path="/patient-portal" element={<PatientLayout />}>
+              {renderPatientRoutes()}
+            </Route>
+          </Route>
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
