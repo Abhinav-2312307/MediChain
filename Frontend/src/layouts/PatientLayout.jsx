@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import {
   Activity,
+  ArrowRight,
   FileHeart,
   HeartPulse,
   LayoutDashboard,
@@ -127,6 +128,9 @@ export default function PatientLayout() {
   const patient = patientProfile ?? getPatientFallback(authUser);
   const currentItem =
     navItems.find((item) => location.pathname.includes(item.to)) || navItems[0];
+  const portalBasePath = location.pathname.startsWith("/patient-portal")
+    ? "/patient-portal"
+    : "/patient";
   const todayLabel = formatDate(new Date(), "Today");
   const reminderCount = normalizeList(patient?.diagnostics?.immunizationReminders).length;
   const hasTodayAppointment = isSameCalendarDay(patient?.admin?.nextAppointment);
@@ -142,6 +146,7 @@ export default function PatientLayout() {
     : reminderCount > 0
       ? "Review reminders and follow-ups"
       : "No appointments today";
+  const taskShortcutHref = reminderCount > 0 ? `${portalBasePath}/diagnostics` : null;
 
   useEffect(() => {
     if (isAuthenticated && !patientProfile && !loading) {
@@ -166,7 +171,11 @@ export default function PatientLayout() {
 
           <div className="absolute left-0 top-0 flex h-full w-[88vw] max-w-xs flex-col border-r border-slate-200 bg-white px-4 py-5 shadow-2xl transition-colors dark:border-slate-800 dark:bg-navbar-bg">
             <div className="mb-6 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
+              <Link
+                to="/patient/dashboard"
+                className="flex items-center gap-3 transition-opacity hover:opacity-80"
+                onClick={() => setMobileNavOpen(false)}
+              >
                 <img
                   src={mediChainLogo}
                   alt="MediChain logo"
@@ -178,7 +187,7 @@ export default function PatientLayout() {
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400">Patient Portal</p>
                 </div>
-              </div>
+              </Link>
 
               <button
                 type="button"
@@ -214,7 +223,10 @@ export default function PatientLayout() {
         <aside className="hidden h-screen w-72 shrink-0 border-r border-slate-200 bg-white/95 px-5 py-6 transition-colors dark:border-slate-800 dark:bg-navbar-bg/90 lg:sticky lg:top-0 lg:flex lg:flex-col">
           <div className="flex h-full flex-col">
             <div>
-              <div className="mb-8 flex items-center gap-3 px-2">
+              <Link
+                to="/patient/dashboard"
+                className="mb-8 flex items-center gap-3 px-2 transition-opacity hover:opacity-80"
+              >
                 <img
                   src={mediChainLogo}
                   alt="MediChain logo"
@@ -226,7 +238,7 @@ export default function PatientLayout() {
                   </p>
                   <p className="text-sm text-slate-500 dark:text-slate-400">Patient Portal</p>
                 </div>
-              </div>
+              </Link>
 
               <nav className="space-y-2">
                 {navItems.map((item) => (
@@ -278,6 +290,15 @@ export default function PatientLayout() {
                     <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-100">
                       {todayStatusDetail}
                     </p>
+                    {taskShortcutHref ? (
+                      <Link
+                        to={taskShortcutHref}
+                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700 dark:text-emerald-300 dark:hover:text-emerald-200"
+                      >
+                        Open pending tasks
+                        <ArrowRight size={16} />
+                      </Link>
+                    ) : null}
                   </div>
 
                   <Classic

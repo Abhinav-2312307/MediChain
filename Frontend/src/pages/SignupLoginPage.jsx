@@ -1,10 +1,10 @@
 import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import SignupForm from "../components/SignupForm";
 import LoginForm from "../components/LoginForm";
 import Navbar from "../components/Navbar";
 import { useTheme } from "../context/ThemeContext";
 import Typewriter from "typewriter-effect";
-import { useNavigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 const mediChainLogo = "/medichain%20Icon.png";
@@ -49,7 +49,7 @@ export default function SignupLoginPage() {
           }
         }}
       />
-      <Navbar />
+      <Navbar showMarketingLinks={false} showAuthActions={false} />
 
       <div className="fixed inset-0 z-0">
         <div
@@ -71,7 +71,7 @@ export default function SignupLoginPage() {
           }`}
         >
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
               <img
                 src={mediChainLogo}
                 alt="MediChain logo"
@@ -79,21 +79,14 @@ export default function SignupLoginPage() {
               />
               <div>
                 <p
-                  className={`text-sm font-semibold transition-colors duration-300 ${
+                  className={`text-lg font-bold transition-colors duration-300 ${
                     isDark ? "text-white" : "text-slate-900"
                   }`}
                 >
                   MediChain
                 </p>
-                <p
-                  className={`text-xs transition-colors duration-300 ${
-                    isDark ? "text-neutral-400" : "text-slate-500"
-                  }`}
-                >
-                  Patient access
-                </p>
               </div>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-2">
               {/* Toggle Buttons */}

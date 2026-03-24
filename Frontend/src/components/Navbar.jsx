@@ -8,7 +8,11 @@ import { useTheme } from "@/context/ThemeContext";
 
 const mediChainLogo = "/medichain%20Icon.png";
 
-export default function Navbar({ locoScrollRef }) {
+export default function Navbar({
+  locoScrollRef,
+  showMarketingLinks = true,
+  showAuthActions = true,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
 
@@ -22,6 +26,11 @@ export default function Navbar({ locoScrollRef }) {
     setIsOpen(false);
     if (locoScrollRef.current) {
       locoScrollRef.current.scrollTo(target);
+      return;
+    }
+
+    if (target === "#") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
@@ -35,8 +44,8 @@ export default function Navbar({ locoScrollRef }) {
       data-scroll-target="#main-scroll-container"
       className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-navbar-bg/80 backdrop-blur-md transition-colors duration-300"
     >
-      <div className="container mx-auto px-4 py-2">
-        <div className="flex justify-between items-center">
+      <div className="container mx-auto px-4">
+        <div className="flex h-14 items-center justify-between">
           {/* LOGO */}
           <Link
             to="/"
@@ -52,17 +61,21 @@ export default function Navbar({ locoScrollRef }) {
           </Link>
 
           {/*  DESKTOP NAVIGATION */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                onClick={() => handleScrollTo(link.target)}
-                className="text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:text-blue-600 dark:text-text-for-dark dark:hover:text-greenish"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+          {showMarketingLinks ? (
+            <div className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  onClick={() => handleScrollTo(link.target)}
+                  className="text-sm font-medium text-gray-600 cursor-pointer transition-colors hover:text-blue-600 dark:text-text-for-dark dark:hover:text-greenish"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="hidden md:block" />
+          )}
 
           {/*  RIGHT ACTIONs */}
           <div className="hidden md:flex items-center gap-3">
@@ -74,17 +87,21 @@ export default function Navbar({ locoScrollRef }) {
               aria-label="Toggle Theme"
             />
 
-            <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
+            {showAuthActions ? (
+              <>
+                <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
 
-            <Link
-              to="/login"
-              className="text-sm font-semibold text-gray-600 hover:text-blue-600 dark:text-text-for-dark dark:hover:text-white transition-colors"
-            >
-              Log in
-            </Link>
-            <LiquidButton className="dark:hover:text-white">
-              <Link to="/signup">Sign Up</Link>
-            </LiquidButton>
+                <Link
+                  to="/login"
+                  className="text-sm font-semibold text-gray-600 hover:text-blue-600 dark:text-text-for-dark dark:hover:text-white transition-colors"
+                >
+                  Log in
+                </Link>
+                <LiquidButton className="dark:hover:text-white">
+                  <Link to="/signup">Sign Up</Link>
+                </LiquidButton>
+              </>
+            ) : null}
           </div>
 
           {/* 4. MOBILE TOGGLE */}
@@ -113,28 +130,34 @@ export default function Navbar({ locoScrollRef }) {
       {isOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-navbar-bg shadow-xl">
           <div className="flex flex-col p-4 space-y-4">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                onClick={() => handleScrollTo(link.target)}
-                className="text-gray-600 font-medium hover:text-blue-600 dark:text-text-for-dark dark:hover:text-greenish"
-              >
-                {link.name}
-              </a>
-            ))}
-            <hr className="border-gray-100 dark:border-gray-700" />
-            <Link
-              to="/login"
-              className="text-center py-2 text-gray-600 font-semibold dark:text-text-for-dark"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/signup"
-              className="text-center py-2 bg-blue-600 text-white rounded-lg font-semibold dark:bg-greenish dark:text-navbar-bg"
-            >
-              Sign Up
-            </Link>
+            {showMarketingLinks
+              ? navLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    onClick={() => handleScrollTo(link.target)}
+                    className="text-gray-600 font-medium hover:text-blue-600 dark:text-text-for-dark dark:hover:text-greenish"
+                  >
+                    {link.name}
+                  </a>
+                ))
+              : null}
+            {showAuthActions ? (
+              <>
+                <hr className="border-gray-100 dark:border-gray-700" />
+                <Link
+                  to="/login"
+                  className="text-center py-2 text-gray-600 font-semibold dark:text-text-for-dark"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="text-center py-2 bg-blue-600 text-white rounded-lg font-semibold dark:bg-greenish dark:text-navbar-bg"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : null}
           </div>
         </div>
       )}

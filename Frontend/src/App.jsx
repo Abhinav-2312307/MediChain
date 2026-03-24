@@ -11,26 +11,23 @@ import ChatPage from "./pages/patient/ChatPage";
 import CurrentHealthPage from "./pages/patient/CurrentHealthPage";
 import DashboardPage from "./pages/patient/DashboardPage";
 import DiagnosticsPage from "./pages/patient/DiagnosticsPage";
-import MedicalPage from "./pages/patient/MedicalPage";
 import MedicalHistoryPage from "./pages/patient/MedicalHistoryPage";
-import PatientPageIndex from "./pages/patient/PatientPageIndex";
 import ProfilePage from "./pages/patient/ProfilePage";
-import SettingsPage from "./pages/patient/SettingsPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
 function renderPatientRoutes() {
   return (
     <>
-      <Route index element={<PatientPageIndex />} />
+      <Route index element={<Navigate to="dashboard" replace />} />
       <Route path="dashboard" element={<DashboardPage />} />
       <Route path="profile" element={<ProfilePage />} />
       <Route path="medical-history" element={<MedicalHistoryPage />} />
       <Route path="current-health" element={<CurrentHealthPage />} />
-      <Route path="medical" element={<MedicalPage />} />
+      <Route path="medical" element={<Navigate to="../medical-history" replace />} />
       <Route path="diagnostics" element={<DiagnosticsPage />} />
       <Route path="chat" element={<ChatPage />} />
-      <Route path="settings" element={<SettingsPage />} />
+      <Route path="settings" element={<Navigate to="../profile" replace />} />
     </>
   );
 }
@@ -52,9 +49,8 @@ export default function App() {
     <ThemeProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-
           <Route element={<PublicRoute />}>
+            <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Signup />} />
           </Route>
