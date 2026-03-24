@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const Patient = require("../models/Patient");
 const Doctor = require("../models/Doctor");
 const Hospital = require("../models/Hospital");
+const { sanitizePatient } = require("../utils/sanitizePatient");
 
 // router.get("/patient", authMiddleware, async (req, res) => {
 //   try {
@@ -40,7 +41,7 @@ router.get("/patient/data", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Patient not found" });
     }
 
-    res.status(200).json({ patient });
+    res.status(200).json({ patient: sanitizePatient(patient) });
   } catch (error) {
     console.error("Error fetching patient data:", error);
     res.status(500).json({ message: "Server error" });

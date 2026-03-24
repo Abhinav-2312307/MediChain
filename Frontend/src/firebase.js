@@ -2,7 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyApU7jWOE-LU2BK4on9RdqhgZAQ3Ade8Ug",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain:
     import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "retailgeniusai.firebaseapp.com",
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "retailgeniusai",

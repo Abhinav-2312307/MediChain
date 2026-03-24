@@ -6,6 +6,8 @@ import { useTheme } from "../context/ThemeContext";
 import Typewriter from "typewriter-effect";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+
+const mediChainLogo = "/medichain%20Icon.png";
 const signupTexts = [
   "Please sanitize your hands before signing up.",
   "Your health data will love its new home.",
@@ -69,7 +71,29 @@ export default function SignupLoginPage() {
           }`}
         >
           <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3"></div>
+            <div className="flex items-center gap-3">
+              <img
+                src={mediChainLogo}
+                alt="MediChain logo"
+                className="h-10 w-10 rounded-xl object-contain"
+              />
+              <div>
+                <p
+                  className={`text-sm font-semibold transition-colors duration-300 ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
+                >
+                  MediChain
+                </p>
+                <p
+                  className={`text-xs transition-colors duration-300 ${
+                    isDark ? "text-neutral-400" : "text-slate-500"
+                  }`}
+                >
+                  Patient access
+                </p>
+              </div>
+            </div>
 
             <div className="flex items-center gap-2">
               {/* Toggle Buttons */}

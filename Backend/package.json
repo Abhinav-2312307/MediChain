@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "cleanup:vital-signs": "node scripts/removeLegacyVitalSigns.js"
   },
   "keywords": [],
   "author": "",

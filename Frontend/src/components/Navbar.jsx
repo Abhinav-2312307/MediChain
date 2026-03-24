@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShieldCheck } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Classic } from "@theme-toggles/react";
 import "@theme-toggles/react/css/Classic.css";
 import { LiquidButton } from "@/components/ui/shadcn-io/liquid-button";
 import { useTheme } from "@/context/ThemeContext";
+
+const mediChainLogo = "/medichain%20Icon.png";
 
 export default function Navbar({ locoScrollRef }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,15 +35,19 @@ export default function Navbar({ locoScrollRef }) {
       data-scroll-target="#main-scroll-container"
       className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-navbar-bg/80 backdrop-blur-md transition-colors duration-300"
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-2">
         <div className="flex justify-between items-center">
           {/* LOGO */}
           <Link
             to="/"
-            className="flex items-center gap-2 text-xl font-bold text-blue-600 dark:text-white hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 text-base font-bold text-blue-600 dark:text-white hover:opacity-80 transition-opacity"
             onClick={() => handleScrollTo("#")}
           >
-            <ShieldCheck className="w-7 h-7" />
+            <img
+              src={mediChainLogo}
+              alt="MediChain logo"
+              className="h-6 w-6 rounded-md object-contain"
+            />
             <span className="tracking-tight">MediChain</span>
           </Link>
 
@@ -59,16 +65,16 @@ export default function Navbar({ locoScrollRef }) {
           </div>
 
           {/*  RIGHT ACTIONs */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-3">
             <Classic
               duration={750}
               toggled={isDark}
               onClick={handleTheme}
-              className="text-gray-600 dark:text-yellow-400 transition-all text-4xl flex items-center justify-center"
+              className="text-gray-600 dark:text-yellow-400 transition-all text-2xl flex items-center justify-center"
               aria-label="Toggle Theme"
             />
 
-            <div className="h-6 w-px bg-gray-300 dark:bg-gray-700"></div>
+            <div className="h-5 w-px bg-gray-300 dark:bg-gray-700"></div>
 
             <Link
               to="/login"
@@ -82,21 +88,21 @@ export default function Navbar({ locoScrollRef }) {
           </div>
 
           {/* 4. MOBILE TOGGLE */}
-          <div className="flex items-center gap-4 md:hidden">
+          <div className="flex items-center gap-3 md:hidden">
             <Classic
               duration={750}
               toggled={isDark}
               onClick={handleTheme}
-              className="text-gray-600 dark:text-yellow-400 text-3xl flex items-center justify-center"
+              className="text-gray-600 dark:text-yellow-400 text-xl flex items-center justify-center"
             />
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-gray-600 dark:text-white"
             >
               {isOpen ? (
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
               )}
             </button>
           </div>

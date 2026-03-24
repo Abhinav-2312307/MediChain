@@ -56,12 +56,6 @@ const patientSchema = new mongoose.Schema(
 
     diagnostics: {
       labReports: [String], // store URLs to uploaded reports
-      vitalSigns: {
-        bloodPressure: String,
-        heartRate: String,
-        bmi: String,
-        sugarLevels: String,
-      },
       organFunction: {
         liver: String,
         kidney: String,

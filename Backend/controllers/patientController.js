@@ -1,4 +1,5 @@
 const Patient = require("../models/Patient");
+const { sanitizePatient } = require("../utils/sanitizePatient");
 
 async function getPatientProfile(req, res) {
   try {
@@ -12,7 +13,7 @@ async function getPatientProfile(req, res) {
       return res.status(404).json({ message: "Patient not found." });
     }
 
-    return res.status(200).json({ patient });
+    return res.status(200).json({ patient: sanitizePatient(patient) });
   } catch (error) {
     console.error("Profile fetch error:", error);
     return res.status(500).json({
@@ -75,7 +76,7 @@ async function updatePatientInfo(req, res) {
 
     return res.status(200).json({
       message: "Patient profile updated successfully.",
-      patient: updatedPatient,
+      patient: sanitizePatient(updatedPatient),
     });
   } catch (error) {
     console.error("Profile update error:", error);

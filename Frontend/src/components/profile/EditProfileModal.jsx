@@ -7,6 +7,15 @@ import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Modal from "../ui/Modal";
 
+function Field({ label, children }) {
+  return (
+    <label className="space-y-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+      <span>{label}</span>
+      {children}
+    </label>
+  );
+}
+
 export default function EditProfileModal({ patient, close, onSaved }) {
   const dispatch = useAppDispatch();
   const saving = useAppSelector(selectPatientLoading);
@@ -15,6 +24,9 @@ export default function EditProfileModal({ patient, close, onSaved }) {
     phone: patient?.phone || "",
     address: patient?.address || "",
     bloodGroup: patient?.bloodGroup || "",
+    emergencyContactName: patient?.emergencyContact?.name || "",
+    emergencyContactRelation: patient?.emergencyContact?.relation || "",
+    emergencyContactPhone: patient?.emergencyContact?.phone || "",
   });
   const [profilePic, setProfilePic] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
@@ -43,6 +55,9 @@ export default function EditProfileModal({ patient, close, onSaved }) {
       body.append("phone", form.phone);
       body.append("address", form.address);
       body.append("bloodGroup", form.bloodGroup);
+      body.append("emergencyContactName", form.emergencyContactName);
+      body.append("emergencyContactRelation", form.emergencyContactRelation);
+      body.append("emergencyContactPhone", form.emergencyContactPhone);
 
       if (profilePic) {
         body.append("profilePic", profilePic);
@@ -61,20 +76,25 @@ export default function EditProfileModal({ patient, close, onSaved }) {
   };
 
   return (
-    <Modal title="Edit Profile" onClose={close}>
+    <Modal
+      title="Edit profile"
+      description="Update the contact information shown throughout your patient portal."
+      onClose={close}
+      className="max-w-2xl"
+    >
       <div className="space-y-4">
         <div className="flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-slate-800">
             {previewUrl ? (
               <img src={previewUrl} alt="Preview" className="h-full w-full object-cover" />
             ) : patient?.profilePic ? (
               <img src={patient.profilePic} alt="Profile" className="h-full w-full object-cover" />
             ) : (
-              <div className="text-lg font-semibold text-gray-500">{patient?.name?.[0] || "P"}</div>
+              <div className="text-lg font-semibold text-gray-500 dark:text-slate-300">{patient?.name?.[0] || "P"}</div>
             )}
           </div>
 
-          <label className="text-sm text-slate-700 dark:text-slate-200">
+          <label className="text-sm text-slate-700 dark:text-slate-300">
             <span className="cursor-pointer text-blue-600 hover:underline">
               Change profile picture
             </span>
@@ -98,45 +118,97 @@ export default function EditProfileModal({ patient, close, onSaved }) {
           </label>
         </div>
 
-        <Input
-          placeholder="Phone"
-          value={form.phone}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              phone: event.target.value,
-            }))
-          }
-        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Phone">
+            <Input
+              placeholder="Phone number"
+              value={form.phone}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  phone: event.target.value,
+                }))
+              }
+            />
+          </Field>
 
-        <Input
-          placeholder="Address"
-          value={form.address}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              address: event.target.value,
-            }))
-          }
-        />
+          <Field label="Blood group">
+            <Input
+              placeholder="Blood group"
+              value={form.bloodGroup}
+              onChange={(event) =>
+                setForm((current) => ({
+                  ...current,
+                  bloodGroup: event.target.value,
+                }))
+              }
+            />
+          </Field>
+        </div>
 
-        <Input
-          placeholder="Blood Group"
-          value={form.bloodGroup}
-          onChange={(event) =>
-            setForm((current) => ({
-              ...current,
-              bloodGroup: event.target.value,
-            }))
-          }
-        />
+        <Field label="Address">
+          <Input
+            placeholder="Street, city, state"
+            value={form.address}
+            onChange={(event) =>
+              setForm((current) => ({
+                ...current,
+                address: event.target.value,
+              }))
+            }
+          />
+        </Field>
 
-        {fileError ? <div className="text-sm text-red-600">{fileError}</div> : null}
-        {didSubmit && requestError ? <div className="text-sm text-red-600">{requestError}</div> : null}
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 transition-colors dark:border-slate-800 dark:bg-slate-950/60">
+          <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Emergency contact</p>
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            <Field label="Name">
+              <Input
+                placeholder="Contact name"
+                value={form.emergencyContactName}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    emergencyContactName: event.target.value,
+                  }))
+                }
+              />
+            </Field>
+
+            <Field label="Relation">
+              <Input
+                placeholder="Relation"
+                value={form.emergencyContactRelation}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    emergencyContactRelation: event.target.value,
+                  }))
+                }
+              />
+            </Field>
+
+            <Field label="Phone">
+              <Input
+                placeholder="Emergency phone"
+                value={form.emergencyContactPhone}
+                onChange={(event) =>
+                  setForm((current) => ({
+                    ...current,
+                    emergencyContactPhone: event.target.value,
+                  }))
+                }
+              />
+            </Field>
+          </div>
+        </div>
+
+        {fileError ? <div className="text-sm text-red-600 dark:text-rose-300">{fileError}</div> : null}
+        {didSubmit && requestError ? <div className="text-sm text-red-600 dark:text-rose-300">{requestError}</div> : null}
 
         <div className="flex gap-3">
           <Button onClick={handleSubmit} disabled={saving || Boolean(fileError)}>
-            {saving ? "Saving..." : "Save"}
+            {saving ? "Saving..." : "Save changes"}
           </Button>
           <Button variant="secondary" onClick={close}>
             Cancel
