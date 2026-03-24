@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   Activity,
-  ArrowRight,
   FileHeart,
   HeartPulse,
   LayoutDashboard,
+  LogOut,
   Menu,
   MessageCircleMore,
+  Settings,
   UserCircle2,
   X,
 } from "lucide-react";
@@ -18,6 +19,9 @@ import "@theme-toggles/react/css/Classic.css";
 import Button from "../components/ui/Button";
 import Loader from "../components/ui/Loader";
 import { useTheme } from "../context/ThemeContext";
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
+import { logout } from "../features/auth/authSlice";
 import { selectCurrentUser, selectIsAuthenticated } from "../features/auth/authSelectors";
 import {
   selectPatientData,
@@ -26,7 +30,7 @@ import {
 } from "../features/patient/patientSelectors";
 import { fetchPatientProfile } from "../features/patient/patientThunks";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
-import { formatDate, getInitials, normalizeList } from "../lib/patient";
+import { getInitials } from "../lib/patient";
 
 const mediChainLogo = "/medichain%20Icon.png";
 
@@ -37,6 +41,7 @@ const navItems = [
   { to: "current-health", label: "Current Health", icon: HeartPulse },
   { to: "diagnostics", label: "Diagnostics", icon: Activity },
   { to: "chat", label: "Chat", icon: MessageCircleMore },
+  { to: "settings", label: "Settings", icon: Settings },
 ];
 
 function getPatientFallback(user) {
@@ -55,40 +60,6 @@ function getNavLinkClasses(isActive) {
   }`;
 }
 
-function isSameCalendarDay(value, referenceDate = new Date()) {
-  if (!value) {
-    return false;
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return false;
-  }
-
-  return (
-    date.getFullYear() === referenceDate.getFullYear() &&
-    date.getMonth() === referenceDate.getMonth() &&
-    date.getDate() === referenceDate.getDate()
-  );
-}
-
-function formatTime(value) {
-  if (!value) {
-    return null;
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-}
 
 function PatientIdentity({ patient }) {
   return (
@@ -114,9 +85,22 @@ function PatientIdentity({ patient }) {
   );
 }
 
+function SidebarLogout({ onLogout }) {
+  return (
+    <button
+      onClick={onLogout}
+      className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-red-50 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100 dark:bg-rose-500/10 dark:text-rose-400 dark:hover:bg-rose-500/20"
+    >
+      <LogOut size={16} />
+      Log out
+    </button>
+  );
+}
+
 export default function PatientLayout() {
   const dispatch = useAppDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -124,29 +108,17 @@ export default function PatientLayout() {
   const patientProfile = useAppSelector(selectPatientData);
   const loading = useAppSelector(selectPatientLoading);
   const error = useAppSelector(selectPatientError);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const patient = patientProfile ?? getPatientFallback(authUser);
   const currentItem =
     navItems.find((item) => location.pathname.includes(item.to)) || navItems[0];
-  const portalBasePath = location.pathname.startsWith("/patient-portal")
-    ? "/patient-portal"
-    : "/patient";
-  const todayLabel = formatDate(new Date(), "Today");
-  const reminderCount = normalizeList(patient?.diagnostics?.immunizationReminders).length;
-  const hasTodayAppointment = isSameCalendarDay(patient?.admin?.nextAppointment);
-  const todaySeparator = "\u2022";
-  const todayAppointmentTime = formatTime(patient?.admin?.nextAppointment);
-  const todayStatusTitle = hasTodayAppointment
-    ? `Today ${todaySeparator} ${todayLabel}`
-    : reminderCount > 0
-      ? `Today ${todaySeparator} ${reminderCount} task${reminderCount === 1 ? "" : "s"} pending`
-      : `Today ${todaySeparator} ${todayLabel}`;
-  const todayStatusDetail = hasTodayAppointment
-    ? `Appointment at ${todayAppointmentTime || "scheduled time pending"}`
-    : reminderCount > 0
-      ? "Review reminders and follow-ups"
-      : "No appointments today";
-  const taskShortcutHref = reminderCount > 0 ? `${portalBasePath}/diagnostics` : null;
+
+  const handleLogout = async () => {
+    await signOut(auth).catch(() => {});
+    dispatch(logout());
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
     if (isAuthenticated && !patientProfile && !loading) {
@@ -156,6 +128,7 @@ export default function PatientLayout() {
 
   useEffect(() => {
     setMobileNavOpen(false);
+    setDropdownOpen(false);
   }, [location.pathname]);
 
   return (
@@ -214,6 +187,7 @@ export default function PatientLayout() {
 
             <div className="mt-auto pt-6">
               <PatientIdentity patient={patient} />
+              <SidebarLogout onLogout={handleLogout} />
             </div>
           </div>
         </div>
@@ -256,6 +230,7 @@ export default function PatientLayout() {
 
             <div className="mt-auto pt-6">
               <PatientIdentity patient={patient} />
+              <SidebarLogout onLogout={handleLogout} />
             </div>
           </div>
         </aside>
@@ -283,29 +258,56 @@ export default function PatientLayout() {
                 </div>
 
                 <div className="flex items-center gap-3 sm:justify-end">
-                  <div className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-center transition-colors dark:border-slate-800 dark:bg-slate-900/80 sm:w-auto sm:min-w-[240px] sm:text-right">
-                    <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      {todayStatusTitle}
-                    </p>
-                    <p className="mt-1 text-sm font-medium text-slate-900 dark:text-slate-100">
-                      {todayStatusDetail}
-                    </p>
-                    {taskShortcutHref ? (
-                      <Link
-                        to={taskShortcutHref}
-                        className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700 dark:text-emerald-300 dark:hover:text-emerald-200"
-                      >
-                        Open pending tasks
-                        <ArrowRight size={16} />
-                      </Link>
-                    ) : null}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 pr-3 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:hover:bg-slate-800"
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700 dark:bg-emerald-500/20 dark:text-emerald-300">
+                        {patient?.profilePic ? (
+                          <img src={patient.profilePic} alt="Profile" className="h-full w-full rounded-full object-cover" />
+                        ) : (
+                          getInitials(patient?.name) || "U"
+                        )}
+                      </div>
+                      <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                        {patient?.name?.split(" ")[0] || "Patient"}
+                      </span>
+                    </button>
+
+                    {dropdownOpen && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+                        <div className="absolute right-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                          <Link
+                            to="/patient/profile"
+                            className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
+                          >
+                            Profile
+                          </Link>
+                          <Link
+                            to="/patient/settings"
+                            className="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
+                          >
+                            Settings
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 dark:text-rose-400 dark:hover:bg-rose-500/10"
+                          >
+                            Log out
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <Classic
                     duration={750}
                     toggled={isDark}
                     onClick={toggleTheme}
-                    className="shrink-0 text-4xl text-slate-600 transition-all dark:text-yellow-400"
+                    className="shrink-0 text-3xl text-slate-600 transition-all dark:text-yellow-400"
                     aria-label="Toggle theme"
                   />
                 </div>

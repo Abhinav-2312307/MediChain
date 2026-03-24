@@ -1,0 +1,760 @@
+[
+  {
+    "filePath": "D:\\MediVault\\Frontend\\eslint.config.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\App.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\api\\authApi.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\api\\axios.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\api\\patientApi.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\app\\store.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\CTASection.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\Features.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\Footer.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\Hero.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\HowItWorks.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\LoginForm.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\Navbar.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\RoleSelector.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\Security.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\SignupForm.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\auth\\GoogleLoginButton.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\chat\\MessageBubble.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\chat\\PatientChat.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\dashboard\\DashboardOverview.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\dashboard\\HealthSummary.jsx",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'nextAppointmentDisplay' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u.",
+        "line": 14,
+        "column": 9,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 14,
+        "endColumn": 31,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "nextAppointmentDisplay"
+            },
+            "fix": {
+              "range": [
+                720,
+                828
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'nextAppointmentDisplay'."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { AlertCircle, CalendarClock, ActivitySquare, Pill } from \"lucide-react\";\r\n\r\nimport MetricCard from \"./MetricCard\";\r\nimport { formatDateTime, normalizeList } from \"../../lib/patient\";\r\n\r\nexport default function HealthSummary({ patient }) {\r\n  const medications = normalizeList(patient?.currentHealth?.medications);\r\n  const conditions = normalizeList(patient?.medicalHistory?.healthConditions);\r\n  const allergies = normalizeList(patient?.medicalHistory?.allergies);\r\n  \r\n  const firstMedication = medications[0]?.name || \"Current treatment list\";\r\n  const firstCondition = conditions[0]?.condition || \"Active condition tracking\";\r\n  const firstAllergy = allergies[0]?.allergen || \"No allergy alerts on file\";\r\n  const nextAppointmentDisplay = formatDateTime(patient?.admin?.nextAppointment) || \"No upcoming appointment\";\r\n\r\n  return (\r\n    <div className=\"grid gap-4 md:grid-cols-2 xl:grid-cols-4\">\r\n      <MetricCard\r\n        icon={Pill}\r\n        label=\"Medications\"\r\n        value={medications.length ? `${medications.length} active` : \"None recorded\"}\r\n        helper={firstMedication}\r\n        accent=\"bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-300\"\r\n      />\r\n      <MetricCard\r\n        icon={ActivitySquare}\r\n        label=\"Active Conditions\"\r\n        value={conditions.length ? `${conditions.length} current` : \"None recorded\"}\r\n        helper={firstCondition}\r\n        accent=\"bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300\"\r\n      />\r\n      <MetricCard\r\n        icon={AlertCircle}\r\n        label=\"Allergy Alerts\"\r\n        value={allergies.length ? `${allergies.length} recorded` : \"None recorded\"}\r\n        helper={firstAllergy}\r\n        accent=\"bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-300\"\r\n      />\r\n      <MetricCard\r\n        icon={CalendarClock}\r\n        label=\"Next Appointment\"\r\n        value={formatDateTime(patient?.admin?.nextAppointment) || \"Not Scheduled\"}\r\n        helper={patient?.admin?.nextAppointment ? \"With primary doctor\" : \"Book an appointment\"}\r\n        accent=\"bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300\"\r\n      />\r\n    </div>\r\n  );\r\n}\r\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\dashboard\\MetricCard.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\diagnostics\\DiagnosticsPanel.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\medical\\CurrentHealthCard.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\medical\\MedicalHistoryCard.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\profile\\EditProfileModal.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\profile\\ProfileDetails.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Badge.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Button.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Card.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\EmptyState.jsx",
+    "messages": [
+      {
+        "ruleId": "no-unused-vars",
+        "severity": 2,
+        "message": "'Icon' is defined but never used.",
+        "line": 1,
+        "column": 44,
+        "nodeType": "Identifier",
+        "messageId": "unusedVar",
+        "endLine": 1,
+        "endColumn": 48,
+        "suggestions": [
+          {
+            "messageId": "removeVar",
+            "data": {
+              "varName": "Icon"
+            },
+            "fix": {
+              "range": [
+                37,
+                48
+              ],
+              "text": ""
+            },
+            "desc": "Remove unused variable 'Icon'."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "export default function EmptyState({ icon: Icon, title, description }) {\n  return (\n    <div className=\"flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center transition-colors dark:border-slate-800 dark:bg-slate-900/50\">\n      <div className=\"mb-4 rounded-full bg-slate-100 p-3 text-slate-400 dark:bg-slate-800 dark:text-slate-500\">\n        <Icon size={32} />\n      </div>\n      <h3 className=\"text-lg font-semibold text-slate-900 dark:text-slate-100\">{title}</h3>\n      <p className=\"mt-2 max-w-sm text-sm text-slate-500 dark:text-slate-400\">{description}</p>\n    </div>\n  );\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Input.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Loader.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Modal.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\Section.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\components\\ui\\shadcn-io\\liquid-button\\index.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\context\\ThemeContext.jsx",
+    "messages": [],
+    "suppressedMessages": [
+      {
+        "ruleId": "react-refresh/only-export-components",
+        "severity": 2,
+        "message": "Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components.",
+        "line": 39,
+        "column": 14,
+        "nodeType": "Identifier",
+        "messageId": "namedExport",
+        "endLine": 39,
+        "endColumn": 22,
+        "suppressions": [
+          {
+            "kind": "directive",
+            "justification": ""
+          }
+        ]
+      }
+    ],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\auth\\authSelectors.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\auth\\authSlice.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\auth\\authStorage.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\auth\\authThunks.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\patient\\patientSelectors.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\patient\\patientSlice.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\features\\patient\\patientThunks.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\firebase.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\hooks\\reduxHooks.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\layouts\\PatientLayout.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\lib\\patient.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\lib\\utils.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\main.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\Home.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\SignupLoginPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\ChatPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\CurrentHealthPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\DashboardPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\DiagnosticsPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\MedicalHistoryPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\ProfilePage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\pages\\patient\\SettingsPage.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\routes\\PrivateRoute.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\src\\routes\\PublicRoute.jsx",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "D:\\MediVault\\Frontend\\vite.config.js",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

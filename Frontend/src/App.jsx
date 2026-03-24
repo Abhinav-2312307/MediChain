@@ -13,6 +13,7 @@ import DashboardPage from "./pages/patient/DashboardPage";
 import DiagnosticsPage from "./pages/patient/DiagnosticsPage";
 import MedicalHistoryPage from "./pages/patient/MedicalHistoryPage";
 import ProfilePage from "./pages/patient/ProfilePage";
+import SettingsPage from "./pages/patient/SettingsPage";
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 
@@ -27,7 +28,7 @@ function renderPatientRoutes() {
       <Route path="medical" element={<Navigate to="../medical-history" replace />} />
       <Route path="diagnostics" element={<DiagnosticsPage />} />
       <Route path="chat" element={<ChatPage />} />
-      <Route path="settings" element={<Navigate to="../profile" replace />} />
+      <Route path="settings" element={<SettingsPage />} />
     </>
   );
 }

@@ -1,4 +1,6 @@
-﻿import { cn } from "../../lib/utils";
+import { X } from "lucide-react";
+
+import { cn } from "../../lib/utils";
 
 export default function Modal({
   title,
@@ -32,7 +34,7 @@ export default function Modal({
             className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
             aria-label="Close modal"
           >
-            ×
+            <X size={20} />
           </button>
         </div>
         {children}
