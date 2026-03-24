@@ -7,6 +7,7 @@ import { useTheme } from "../../context/ThemeContext";
 import { auth, GoogleAuthProvider } from "../../firebase";
 import { selectAuthLoading } from "../../features/auth/authSelectors";
 import { loginWithGoogle } from "../../features/auth/authThunks";
+import { setCredentials } from "../../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 
 export default function GoogleLoginButton({
@@ -30,17 +31,25 @@ export default function GoogleLoginButton({
 
       const result = await signInWithPopup(auth, provider);
       const firebaseUser = result.user;
-      const firebaseToken = await firebaseUser.getIdToken();
 
+      // Extract details
       const response = await dispatch(
         loginWithGoogle({
-          firebaseToken,
-          uid: firebaseUser.uid,
           name: firebaseUser.displayName,
           email: firebaseUser.email,
-          photoURL: firebaseUser.photoURL,
+          firebaseUid: firebaseUser.uid,
+          profilePic: firebaseUser.photoURL,
         })
       ).unwrap();
+      
+      // Store token in localStorage
+      localStorage.setItem("token", response.token);
+      
+      // Dispatch Redux setCredentials
+      dispatch(setCredentials({
+        user: response.user,
+        token: response.token,
+      }));
 
       navigate(response.redirectTo || "/patient");
       toast.success("Google login successful.");

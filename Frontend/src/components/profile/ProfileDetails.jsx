@@ -48,6 +48,11 @@ export default function ProfileDetails({ patient, onEdit, onLogout }) {
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 {patient?.email || "Email unavailable"}
               </p>
+              {patient?.uid && (
+                <p className="mt-1 font-mono text-sm font-semibold text-blue-500 dark:text-emerald-400">
+                  {patient.uid}
+                </p>
+              )}
             </div>
           </div>
 

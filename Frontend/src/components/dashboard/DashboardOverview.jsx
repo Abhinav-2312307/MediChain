@@ -31,6 +31,11 @@ export default function DashboardOverview({ patient }) {
           </div>
 
           <div className="flex flex-wrap gap-3">
+            {patient?.uid && (
+              <Badge className="border-blue-200 bg-blue-100 font-mono text-blue-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-300">
+                {patient.uid}
+              </Badge>
+            )}
             <Badge>{patient?.bloodGroup || "Blood group pending"}</Badge>
             <Badge className="border-emerald-100 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
               {age ? `${age} years old` : "Age unavailable"}
@@ -89,6 +94,7 @@ export default function DashboardOverview({ patient }) {
                 <div>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{patient?.name || "Patient"}</p>
                   <p className="text-sm text-slate-500 dark:text-slate-400">{patient?.email || "Email unavailable"}</p>
+                  {patient?.uid && <p className="mt-1 text-xs font-mono font-semibold text-blue-500 dark:text-emerald-400">{patient.uid}</p>}
                 </div>
               </div>
             </div>

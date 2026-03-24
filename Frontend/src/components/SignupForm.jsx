@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useTheme } from "../context/ThemeContext";
 import { selectAuthError, selectAuthLoading } from "../features/auth/authSelectors";
 import { signupWithCredentials } from "../features/auth/authThunks";
+import { setCredentials } from "../features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import GoogleLoginButton from "./auth/GoogleLoginButton";
 import RoleSelector from "./RoleSelector";
@@ -55,10 +56,24 @@ export default function SignupForm() {
 
     try {
       const response = await dispatch(signupWithCredentials(payload)).unwrap();
+      
+      // Store token in localStorage
+      localStorage.setItem("token", response.token);
+      
+      // Dispatch Redux setCredentials
+      dispatch(setCredentials({
+        user: response.user,
+        token: response.token,
+      }));
+
       navigate(response.redirectTo || "/patient");
       toast.success("Account created successfully.");
     } catch (message) {
-      toast.error(message || "Unable to complete signup.");
+      if (message && message.toLowerCase().includes("exists")) {
+        toast.error("Email already exists.");
+      } else {
+        toast.error(message || "Unable to complete signup.");
+      }
     }
   };
 

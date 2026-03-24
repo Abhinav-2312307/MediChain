@@ -6,75 +6,8 @@ const Doctor = require("../models/Doctor");
 const Hospital = require("../models/Hospital");
 
 const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
-const rolePaths = {
-  patient: "/patient-portal/dashboard",
-  doctor: "/doctor-dashboard",
-  hospital: "/hospital-admin",
-};
-
-async function generateUID(role, Model) {
-  const prefix = role === "patient" ? "PAT" : role === "doctor" ? "DOC" : "HOS";
-
-  let attempts = 0;
-  while (attempts < 10) {
-    const timestamp = Date.now().toString().slice(-6);
-    const random = Math.floor(Math.random() * 1000)
-      .toString()
-      .padStart(3, "0");
-    const uid = `${prefix}-${timestamp}${random}`;
-    const existing = await Model.findOne({ uid });
-
-    if (!existing) {
-      return uid;
-    }
-
-    attempts += 1;
-  }
-
-  const count = await Model.countDocuments();
-  return `${prefix}-${Date.now()}-${count + 1}`;
-}
-
-function normalizeEmail(email) {
-  return typeof email === "string" ? email.trim().toLowerCase() : "";
-}
-
-function sanitizeUser(user) {
-  const plainUser = user.toObject ? user.toObject() : { ...user };
-  delete plainUser.password;
-  return plainUser;
-}
-
-function signAuthToken(user, role) {
-  return jwt.sign({ id: user._id, role, uid: user.uid }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-}
-
-function attachAuthCookie(res, token) {
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: IS_PRODUCTION,
-    sameSite: IS_PRODUCTION ? "none" : "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
-}
-
-function sendAuthResponse(res, { user, role, message, statusCode = 200 }) {
-  const token = signAuthToken(user, role);
-  attachAuthCookie(res, token);
-
-  return res.status(statusCode).json({
-    message,
-    redirectTo: rolePaths[role] || "/",
-    token,
-    user: sanitizeUser(user),
-  });
-}
-
+// Helper to determine which collection a user belongs to based on role
 function getRoleModel(role) {
   if (role === "patient") return Patient;
   if (role === "doctor") return Doctor;
@@ -82,140 +15,131 @@ function getRoleModel(role) {
   return null;
 }
 
-function extractGooglePayload(body) {
-  const payload = {
-    firebaseToken:
-      typeof body.firebaseToken === "string" ? body.firebaseToken.trim() : "",
-    uid: typeof body.uid === "string" ? body.uid.trim() : "",
-    name: typeof body.name === "string" ? body.name.trim() : "",
-    email: normalizeEmail(body.email),
-    photoURL: typeof body.photoURL === "string" ? body.photoURL.trim() : "",
-  };
-
-  if (!payload.uid || !payload.email) {
-    const error = new Error("Google account details are required.");
-    error.statusCode = 400;
-    throw error;
-  }
-
-  return payload;
+// Generate unique ID
+async function generateUID(role, Model) {
+  const prefix = role === "patient" ? "PAT" : role === "doctor" ? "DOC" : "HOS";
+  const count = await Model.countDocuments();
+  return `${prefix}-${Date.now()}-${count + 1}`;
 }
 
+/**
+ * GOOGLE AUTH CONTROLLER
+ * POST /auth/google
+ */
 async function googleAuth(req, res) {
   try {
-    const payload = extractGooglePayload(req.body);
+    const { name, email, firebaseUid, profilePic } = req.body;
 
-    // Keep the Firebase token in the request contract so backend verification
-    // can be added later without changing the frontend flow.
-    void payload.firebaseToken;
+    if (!email || !firebaseUid) {
+      return res.status(400).json({ message: "Email and Firebase UID are required." });
+    }
 
-    let patient = await Patient.findOne({
-      $or: [
-        { email: payload.email },
-        { "authProviders.google.firebaseUid": payload.uid },
-      ],
-    });
+    const normalizedEmail = email.trim().toLowerCase();
 
+    // 1. Check if user exists by email
+    let patient = await Patient.findOne({ email: normalizedEmail });
+
+    // 2. If NOT exists → create new patient
     if (!patient) {
       patient = await Patient.create({
         uid: await generateUID("patient", Patient),
-        name: payload.name || payload.email.split("@")[0] || "Patient",
-        email: payload.email,
-        profilePic: payload.photoURL,
+        name: name || normalizedEmail.split("@")[0],
+        email: normalizedEmail,
+        profilePic: profilePic || "https://avatar.iran.liara.run/public/boy?username=Ash",
+        // Store Google info in authProviders
         authProviders: {
           google: {
-            firebaseUid: payload.uid,
+            firebaseUid: firebaseUid, // DO NOT store as password
             linkedAt: new Date(),
           },
         },
       });
     } else {
-      patient.name = patient.name || payload.name;
-      patient.email = patient.email || payload.email;
-      patient.profilePic = patient.profilePic || payload.photoURL;
-      patient.authProviders = {
-        ...patient.authProviders,
-        google: {
-          firebaseUid: payload.uid,
-          linkedAt: patient.authProviders?.google?.linkedAt || new Date(),
-        },
-      };
-      await patient.save();
+      // 3. If exists → Update auth providers if Google not linked
+      if (!patient.authProviders?.google?.firebaseUid) {
+        patient.authProviders = {
+          ...patient.authProviders,
+          google: {
+            firebaseUid: firebaseUid,
+            linkedAt: new Date(),
+          },
+        };
+        await patient.save();
+      }
     }
 
-    return sendAuthResponse(res, {
-      user: patient,
-      role: "patient",
-      message: "Google login successful.",
+    // 4. Generate JWT payload: { id: user._id, role: "patient" }
+    // expiry: 7d
+    const token = jwt.sign(
+      { id: patient._id, role: "patient" },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Filter out password from response
+    const userObj = patient.toObject();
+    delete userObj.password;
+
+    // 5. Return: { token, user }
+    return res.status(200).json({
+      message: "Google login successful",
+      token,
+      user: userObj,
+      redirectTo: "/patient-portal/dashboard"
     });
   } catch (error) {
     console.error("Google auth error:", error);
-    return res.status(error.statusCode || 500).json({
-      message: error.statusCode ? error.message : "Unable to complete Google login.",
-    });
+    return res.status(500).json({ message: "Unable to complete Google login." });
   }
 }
 
+/**
+ * EMAIL SIGNUP CONTROLLER
+ * POST /auth/signup
+ */
 async function signup(req, res) {
   try {
-    const { role, name, email, password, dob, gender } = req.body;
-
-    if (!role || !["patient", "doctor", "hospital"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role." });
-    }
+    const { name, email, password, role = "patient", dob, gender } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "Name, email, and password are required.",
-      });
+      return res.status(400).json({ message: "Name, email, and password are required." });
     }
 
-    const normalizedEmail = normalizeEmail(email);
+    const normalizedEmail = email.trim().toLowerCase();
     const Model = getRoleModel(role);
-    const existingUser = await Model.findOne({ email: normalizedEmail });
 
+    // 1. Check if user already exists -> return 400 error
+    const existingUser = await Model.findOne({ email: normalizedEmail });
     if (existingUser) {
-      return res.status(409).json({ message: "User already exists." });
+      return res.status(400).json({ message: "Email already exists." });
     }
 
-    let userData = {
+    // 2. Else: create new user (password is hashed via pre-save hook in Schema)
+    const user = await Model.create({
       uid: await generateUID(role, Model),
       name: name.trim(),
       email: normalizedEmail,
-      password,
-    };
+      password: password,
+      dob,
+      gender,
+    });
 
-    if (role === "patient" || role === "doctor") {
-      if (!dob || !gender) {
-        return res.status(400).json({ message: "DOB and gender are required." });
-      }
+    // 3. Generate JWT
+    const token = jwt.sign(
+      { id: user._id, role },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
-      userData = { ...userData, dob, gender };
+    const userObj = user.toObject();
+    delete userObj.password;
 
-      if (role === "doctor") {
-        const { specialization, licenseNumber } = req.body;
-
-        if (!specialization || !licenseNumber) {
-          return res.status(400).json({
-            message: "Specialization and license number are required.",
-          });
-        }
-
-        userData = {
-          ...userData,
-          specialization,
-          licenseNumber,
-        };
-      }
-    }
-
-    const user = await Model.create(userData);
-
-    return sendAuthResponse(res, {
-      user,
-      role,
-      statusCode: 201,
-      message: "User created successfully.",
+    // 4. Return: { token, user }
+    return res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: userObj,
+      redirectTo: role === "patient" ? "/patient-portal/dashboard" : "/"
     });
   } catch (error) {
     console.error("Signup error:", error);
@@ -223,35 +147,53 @@ async function signup(req, res) {
   }
 }
 
+/**
+ * EMAIL LOGIN CONTROLLER
+ * POST /auth/login
+ */
 async function login(req, res) {
-  const normalizedEmail = normalizeEmail(req.body.email);
-  const password = req.body.password;
-
-  if (!normalizedEmail || !password) {
-    return res.status(400).json({ message: "Email and password are required." });
-  }
-
   try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required." });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    // 1. Find user by email (checking all collections)
     const user =
       (await Patient.findOne({ email: normalizedEmail })) ||
       (await Doctor.findOne({ email: normalizedEmail })) ||
       (await Hospital.findOne({ email: normalizedEmail }));
 
     if (!user || !user.password) {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
+    // 2. Compare password using bcrypt
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
     const role = user.constructor.modelName.toLowerCase();
 
-    return sendAuthResponse(res, {
-      user,
-      role,
-      message: "Login successful.",
+    // 3. Return JWT
+    const token = jwt.sign(
+      { id: user._id, role },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const userObj = user.toObject();
+    delete userObj.password;
+
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: userObj,
+      redirectTo: role === "patient" ? "/patient-portal/dashboard" : "/"
     });
   } catch (error) {
     console.error("Login error:", error);

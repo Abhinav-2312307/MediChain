@@ -79,6 +79,11 @@ function PatientIdentity({ patient }) {
           <p className="truncate text-xs text-slate-500 dark:text-slate-400">
             {patient?.email || "Email unavailable"}
           </p>
+          {patient?.uid && (
+            <p className="mt-0.5 truncate text-[10px] font-mono font-bold uppercase tracking-wider text-blue-500 dark:text-emerald-400">
+              {patient.uid}
+            </p>
+          )}
         </div>
       </div>
     </div>
